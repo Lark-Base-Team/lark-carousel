@@ -21,6 +21,7 @@ import {
 } from '@douyinfe/semi-icons';
 import { TextBold, TextItalic, TextUnderline } from '@icon-park/react';
 import { useTypeConfigStore, useStyleConfigStore } from '@/store';
+import { ITableSource } from '../../App';
 
 import './index.css';
 
@@ -43,7 +44,7 @@ export const ConfigPanel: React.FC<IConfigPanelPropsType> = (props) => {
   // 类型与数据
   const { typeConfig, updateTypeConfig } = useTypeConfigStore((state) => state);
 
-  const formApi = useRef();
+  const formApi = useRef<any>();
 
   // 样式配置数据
   const { styleConfig, updateStyleConfig } = useStyleConfigStore(
@@ -68,14 +69,14 @@ export const ConfigPanel: React.FC<IConfigPanelPropsType> = (props) => {
   useEffect(() => {
     async function getConfig() {
       const config = await dashboard.getConfig();
-      updateTypeConfig(config.customConfig.typeConfig);
-      updateStyleConfig(config.customConfig.styleConfig);
-      getTableConfig(config.customConfig.typeConfig.tableId);
+      const { typeConfig, styleConfig } = config.customConfig as any;
+      updateTypeConfig(typeConfig);
+      updateStyleConfig(styleConfig);
+      getTableConfig(typeConfig.tableId);
       if (!formApi.current) return;
       // 更新
-      formApi.current.setValues(config.customConfig.typeConfig);
+      formApi.current.setValues(typeConfig);
     }
-    console.log('dashboard.state--->', dashboard.state);
     // if (dashboard.state === DashboardState.View) {
     //   getConfig();
     // }
@@ -83,26 +84,24 @@ export const ConfigPanel: React.FC<IConfigPanelPropsType> = (props) => {
     getConfig();
   }, []);
 
-  // useEffect(() => {
-  //   if (typeConfig.tableId === '') {
-  //     console.log('设置默认参数---》', tableSource, dataRange);
-  //     const initValues = {
-  //       tableId: tableSource[0]?.tableId || '',
-  //       rowRange: dataRange[0].type || '',
-  //       title: 'hidden',
-  //       secTitle: 'hidden',
-  //       backGround: 'hidden',
-  //       rowLength: 3,
-  //       theme: 'dark',
-  //       control: ['indicator', 'arrow'],
-  //     };
-  //     updateTypeConfig({ ...initValues });
-  //   }
-
-  //   if (!formApi.current) return;
-  //   // 更新
-  //   formApi.current.reset(['title', 'secTitle', 'backGround']);
-  // }, [tableSource]);
+  useEffect(() => {
+    // 初始化的时候
+    if (typeConfig.tableId === '') {
+      const initValues = {
+        tableId: tableSource[0]?.tableId || '',
+        rowRange: 'All',
+        title: 'hidden',
+        secTitle: 'hidden',
+        backGround: 'hidden',
+        rowLength: 3,
+        theme: 'dark',
+        control: ['indicator', 'arrow'],
+      };
+      if (!formApi.current) return;
+      // 更新
+      formApi.current.setValues({ ...initValues });
+    }
+  }, [tableSource, typeConfig.tableId]);
 
   // 类型与数据表单更改
   const handleFormValueChange = (values: any) => {
@@ -111,7 +110,7 @@ export const ConfigPanel: React.FC<IConfigPanelPropsType> = (props) => {
   };
 
   // 样式数据更改
-  const handleChangeStyleConfigData = (filedName: string, value) => {
+  const handleChangeStyleConfigData = (filedName: string, value: any) => {
     const newStyleConfigData = {
       ...styleConfig,
       [filedName]: value,
@@ -121,7 +120,6 @@ export const ConfigPanel: React.FC<IConfigPanelPropsType> = (props) => {
 
   // 保存配置
   const saveConfig = () => {
-    console.log('save config-------->');
     dashboard.saveConfig({
       dataConditions: [],
       customConfig: {
@@ -136,7 +134,7 @@ export const ConfigPanel: React.FC<IConfigPanelPropsType> = (props) => {
     { label: '', value: '#F54A45' },
   ];
 
-  const renderOptionItem = (renderProps) => {
+  const renderOptionItem = (renderProps: any) => {
     const {
       disabled,
       selected,
@@ -162,7 +160,6 @@ export const ConfigPanel: React.FC<IConfigPanelPropsType> = (props) => {
     // 1.props传入的style需在wrapper dom上进行消费，否则在虚拟化场景下会无法正常使用
     // 2.选中(selected)、聚焦(focused)、禁用(disabled)等状态的样式需自行加上，你可以从props中获取到相对的boolean值
     // 3.onMouseEnter需在wrapper dom上绑定，否则上下键盘操作时显示会有问题
-    console.log('option Value', value);
     return (
       <div
         style={style}
@@ -179,8 +176,7 @@ export const ConfigPanel: React.FC<IConfigPanelPropsType> = (props) => {
     );
   };
 
-  const renderSelectedItem = (optionNode) => {
-    console.log('optionNode--->', optionNode);
+  const renderSelectedItem = (optionNode: any) => {
     return (
       <div className="w-full">
         <div
@@ -192,7 +188,7 @@ export const ConfigPanel: React.FC<IConfigPanelPropsType> = (props) => {
   };
 
   return (
-    <div className="relative flex h-screen w-[350px] flex-col border-l-[1px] border-[#ccc] bg-[--semi-color-bg-0]">
+    <div className="relative flex h-screen w-[350px] flex-col border-l-[1px] border-t-[1px] border-[#ccc] bg-[--semi-color-bg-0]">
       <div className="relative flex-1">
         {
           <Tabs type="line">
@@ -200,9 +196,7 @@ export const ConfigPanel: React.FC<IConfigPanelPropsType> = (props) => {
               <div className="px-[20px] pb-[48px] pt-[20px]">
                 <Form
                   initValues={typeConfig}
-                  onValueChange={(values, changedValue) =>
-                    handleFormValueChange(values, changedValue)
-                  }
+                  onValueChange={(values) => handleFormValueChange(values)}
                   getFormApi={(api) => (formApi.current = api)}
                   autoComplete="off"
                 >
@@ -213,6 +207,7 @@ export const ConfigPanel: React.FC<IConfigPanelPropsType> = (props) => {
                     onChange={(selectValue) => {
                       getTableConfig(selectValue as string);
                       const { tableId, ...otherProperties } = typeConfig;
+                      console.log(tableId);
                       // 更改表格的时候重置其他的默认数据
                       const newConfig = {
                         ...otherProperties,
@@ -235,15 +230,15 @@ export const ConfigPanel: React.FC<IConfigPanelPropsType> = (props) => {
                     style={{ width: 300 }}
                     remote={true}
                     optionList={dataRange.map((range) => {
-                      const { type, viewName } = range;
+                      const { type, viewName, viewId } = range as any;
                       if (type === SourceType.ALL) {
                         return {
-                          value: type,
+                          value: 'All',
                           label: '查看全部',
                         };
                       } else {
                         return {
-                          value: type,
+                          value: viewId,
                           label: viewName,
                         };
                       }
@@ -775,7 +770,6 @@ export const ConfigPanel: React.FC<IConfigPanelPropsType> = (props) => {
                       name="demo-radio-small"
                       defaultValue={styleConfig.indicator.type}
                       onChange={(e) => {
-                        console.log('value--->', e.target.value);
                         handleChangeStyleConfigData('indicator', {
                           ...styleConfig.indicator,
                           type: e.target.value,

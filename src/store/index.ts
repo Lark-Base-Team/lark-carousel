@@ -3,7 +3,7 @@ import { IDataRange, SourceType } from '@lark-base-open/js-sdk';
 
 export interface ITypeConfigType {
   tableId: string;
-  rowRange: IDataRange;
+  rowRange: string;
   title: string;
   secTitle: string;
   backGround: string;

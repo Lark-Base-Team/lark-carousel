@@ -4,7 +4,7 @@
   "version": "0.0.0",
   "scripts": {
     "dev": "vite",
-    "build": "tsc && vite build",
+    "build": "vite build",
     "preview": "vite preview"
   },
   "dependencies": {
@@ -14,6 +14,7 @@
     "@kousum/vite-plugin-semi-theme": "0.10.0",
     "@lark-base-open/js-sdk": "https://lf3-static.bytednsdoc.com/obj/eden-cn/jjjpceh7nulojvhj/@lark-base-open-js-sdk-0.4.0-alpha.12.tgz",
     "@semi-bot/semi-theme-universedesign": "1.0.13",
+    "i18next": "23.11.4",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "zustand": "4.5.2"

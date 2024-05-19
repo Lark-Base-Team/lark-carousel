@@ -1,23 +1,12 @@
-import { Carousel, Typography, Space } from '@douyinfe/semi-ui';
+import { Carousel } from '@douyinfe/semi-ui';
 import { useTypeConfigStore, useStyleConfigStore } from '@/store';
 import { useEffect, useState, useMemo } from 'react';
-import {
-  base,
-  IAttachmentField,
-  dashboard,
-  DashboardState,
-} from '@lark-base-open/js-sdk';
+import { base, IAttachmentField } from '@lark-base-open/js-sdk';
 
 export const CarouselComponents: React.FC = () => {
-  const { Title, Paragraph } = Typography;
-
   const style = {
     width: '100%',
     height: '100%',
-  };
-
-  const colorStyle = {
-    color: '#1C1F23',
   };
 
   const defaultImgList = [
@@ -45,12 +34,10 @@ export const CarouselComponents: React.FC = () => {
   ];
 
   // 类型与数据
-  const { typeConfig, updateTypeConfig } = useTypeConfigStore((state) => state);
+  const { typeConfig } = useTypeConfigStore((state) => state);
 
   // 样式配置数据
-  const { styleConfig, updateStyleConfig } = useStyleConfigStore(
-    (state) => state,
-  );
+  const { styleConfig } = useStyleConfigStore((state) => state);
 
   const [titleList, setTitleList] = useState(defaultList);
 
@@ -60,19 +47,17 @@ export const CarouselComponents: React.FC = () => {
     useState(defaultImgList);
 
   useEffect(() => {
-    console.log('配置更新', typeConfig);
-
     async function getTableData() {
       // 获取Table
       const table = await base.getTable(typeConfig.tableId);
-      // console.log('table--->', table, typeConfig.title);
+      // console.log('table--->', table, typeConfig.rowRange);
       // 筛选出 符合范围的 records
       // Todo 筛选范围
 
       const { records } = await table.getRecords({
         pageSize: typeConfig.rowLength,
+        viewId: typeConfig.rowRange === 'All' ? undefined : typeConfig.rowRange,
       });
-      console.log('records---->', records);
 
       // 主题
       if (typeConfig.title !== 'hidden') {
@@ -89,9 +74,8 @@ export const CarouselComponents: React.FC = () => {
       // 副标题
       if (typeConfig.secTitle !== 'hidden') {
         const recordSecTitleList = records.map((item) => {
-          return item.fields[typeConfig.secTitle]
-            ? item.fields[typeConfig.secTitle][0].text
-            : '';
+          const secTitleId = item.fields[typeConfig.secTitle][0];
+          return item.fields[typeConfig.secTitle] ? secTitleId.text : '';
         });
         setSecTitleList([...recordSecTitleList]);
       } else {
@@ -115,7 +99,7 @@ export const CarouselComponents: React.FC = () => {
         );
         const bakcgroundImageList = recordBackgroundList
           .filter((item) => item)
-          .map((item) => item[0]);
+          .map((item) => item?.[0]);
 
         setBackgroundImageList([...bakcgroundImageList]);
       } else {
@@ -127,12 +111,11 @@ export const CarouselComponents: React.FC = () => {
 
   // 渲染数组
   const itemArray = useMemo(() => {
-    console.log('渲染数组---》');
     return Array(typeConfig.rowLength).fill(JSON.stringify(new Date()));
   }, [typeConfig, styleConfig]);
 
   return (
-    <div className="relative flex-1 h-screen">
+    <div className="relative h-screen flex-1  border-t-[1px] border-[#ccc]">
       <Carousel
         style={style}
         theme={typeConfig?.theme}
@@ -145,12 +128,6 @@ export const CarouselComponents: React.FC = () => {
         indicatorPosition={styleConfig.indicator.position}
       >
         {itemArray.map((item, index) => {
-          console.log(
-            'data List',
-            titleList,
-            secTitleList,
-            backgroundImageList,
-          );
           return (
             <div
               key={

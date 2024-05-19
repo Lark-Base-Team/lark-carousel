@@ -36,13 +36,13 @@ const App = () => {
   }, []);
 
   // 获取列信息
-  const getCategories = (table, tableId: string) => {
+  const getCategories = (table: any, tableId: string) => {
     return table.getFieldMetaList(tableId);
   };
 
   // 获取表格列表
-  const getTableList = useCallback((tableIdList) => {
-    return tableIdList.map(async (table) => {
+  const getTableList = useCallback((tableIdList: any) => {
+    return tableIdList.map(async (table: any) => {
       const name = await table.getName();
       return {
         tableName: name,
@@ -73,14 +73,14 @@ const App = () => {
     // console.log('tableMeta---->', tableRanges, categories);
   }
 
-  const switchTheme = (theme: string) => {
-    const body = document.body;
-    if (body.hasAttribute('theme-mode')) {
-      body.removeAttribute('theme-mode');
-    } else {
-      body.setAttribute('theme-mode', theme);
-    }
-  };
+  // const switchTheme = (theme: string) => {
+  //   const body = document.body;
+  //   if (body.hasAttribute('theme-mode')) {
+  //     body.removeAttribute('theme-mode');
+  //   } else {
+  //     body.setAttribute('theme-mode', theme);
+  //   }
+  // };
 
   useEffect(() => {
     initConfigData(null);
@@ -88,19 +88,15 @@ const App = () => {
 
   useEffect(() => {
     async function getConfig() {
-      console.log('App dashboard.state--->', dashboard.state);
       const config = await dashboard.getConfig();
-      console.log('config--->', config);
-      updateTypeConfig(config.customConfig.typeConfig);
-      updateStyleConfig(config.customConfig.styleConfig);
-      initConfigData(config.customConfig.typeConfig.tableId);
+      const { typeConfig, styleConfig } = config.customConfig as any;
+      updateTypeConfig(typeConfig);
+      updateStyleConfig(styleConfig);
+      initConfigData(typeConfig.tableId);
     }
-    // if (dashboard.state === DashboardState.View) {
-    //   getConfig();
-    // }
-
     getConfig();
     dashboard.onConfigChange(getConfig);
+    // dashboard.onDataChange(() => console.log('dataChange'));
   }, []);
 
   return (
