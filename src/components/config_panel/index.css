@@ -1,0 +1,65 @@
+.semi-tabs-bar {
+  display: flex;
+  justify-content: center;
+}
+
+.select-list > .semi-select-selection {
+  margin-left: 0;
+  margin-right: 10px;
+  flex-grow: 0;
+}
+
+.select-list > .semi-select-arrow {
+  width: 10px;
+  height: auto;
+  overflow: visible;
+}
+
+.select-list:focus {
+  border: none;
+}
+
+.select-list {
+  border: none;
+  overflow: visible;
+}
+
+.select-list:hover {
+  border: none;
+}
+
+.textAlign > .semi-select-selection {
+  display: none;
+}
+
+/* .textAlign > .semi-select-arrow {
+  display: none;
+} */
+
+.inputNumber {
+  background-color: #ffffff;
+  width: 10px;
+  padding: 0 0;
+  border: 1px;
+  border-radius: 6px;
+  border-style: solid;
+  border-color: #D0D3D6;
+  outline: none;
+}
+
+.inputNumber > .semi-input-wrapper > input {
+  background-color: #ffffff;
+  outline: none;
+  border-radius: 6px;
+}
+
+.inputNumber > .semi-input-wrapper {
+  border: none;
+}
+
+.selectColorDrop {
+  display: flex;
+  justify-content: start;
+  gap: 5px;
+  padding: 5px 5px;
+}
