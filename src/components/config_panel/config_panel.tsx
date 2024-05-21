@@ -1,4 +1,4 @@
-import { dashboard } from '@lark-base-open/js-sdk';
+import { dashboard, bridge, ThemeModeType } from '@lark-base-open/js-sdk';
 import { useEffect, useRef } from 'react';
 import {
   Tabs,
@@ -66,6 +66,16 @@ export const ConfigPanel: React.FC<IConfigPanelPropsType> = (props) => {
   //   };
   // }, [tableSource, dataRange]);
 
+  const switchTheme = (theme: string) => {
+    const body = document.body;
+    body.removeAttribute('theme-mode');
+
+    body.setAttribute(
+      'theme-mode',
+      theme === ThemeModeType.LIGHT ? 'light' : 'dark',
+    );
+  };
+
   useEffect(() => {
     async function getConfig() {
       const config = await dashboard.getConfig();
@@ -73,6 +83,11 @@ export const ConfigPanel: React.FC<IConfigPanelPropsType> = (props) => {
       updateTypeConfig(typeConfig);
       updateStyleConfig(styleConfig);
       getTableConfig(typeConfig.tableId);
+
+      const theme = await bridge.getTheme();
+      console.log('theme 更改----》', theme);
+      switchTheme(theme);
+
       if (!formApi.current) return;
       // 更新
       formApi.current.setValues(typeConfig);
@@ -111,6 +126,7 @@ export const ConfigPanel: React.FC<IConfigPanelPropsType> = (props) => {
 
   // 样式数据更改
   const handleChangeStyleConfigData = (filedName: string, value: any) => {
+    console.log('样式数据更改----》', filedName, value);
     const newStyleConfigData = {
       ...styleConfig,
       [filedName]: value,
@@ -336,16 +352,16 @@ export const ConfigPanel: React.FC<IConfigPanelPropsType> = (props) => {
               >
                 <div className="flex flex-1 flex-col gap-[12px]">
                   <div>标题</div>
-                  <div className="flex h-[84px] w-[300px] flex-col gap-[8px] rounded-[6px] bg-[#F5F6F7] px-[8px] py-[8px]">
+                  <div className="bg-[rgba(var(--semi-grey-0), 1)] flex h-[84px] w-[300px] flex-col gap-[8px] rounded-[6px] px-[8px] py-[8px]">
                     <div className="text-[12px] text-[#646A73]">文本格式</div>
-                    <div className="flex h-[42px] w-[284px] items-center justify-center gap-[8px] rounded-[8px] border-[1px] border-solid  border-[#1F2329] bg-[#fff]">
+                    <div className="--semi-color-bg-1 flex h-[42px] w-[284px] items-center justify-center gap-[8px] rounded-[8px] border-[1px]  border-solid border-[#1F2329]">
                       <Select
                         className="select-list"
                         defaultValue={styleConfig.title.fontSize}
                         style={{
                           width: 40,
                           outline: 0,
-                          backgroundColor: '#fff',
+                          backgroundColor: 'rgba(var(--semi-color-bg-1))',
                         }}
                         onChange={(value) => {
                           handleChangeStyleConfigData('title', {
@@ -397,7 +413,7 @@ export const ConfigPanel: React.FC<IConfigPanelPropsType> = (props) => {
                         style={{
                           width: 38,
                           outline: 0,
-                          backgroundColor: '#fff',
+                          backgroundColor: 'rgba(var(--semi-color-bg-1))',
                         }}
                         defaultValue={styleConfig.title.textAlign}
                         prefix={textAlignIcons[styleConfig.title.textAlign]}
@@ -416,7 +432,7 @@ export const ConfigPanel: React.FC<IConfigPanelPropsType> = (props) => {
                         className="flex w-[26px] justify-center rounded-[3px] px-[3px] py-[3px]"
                         style={{
                           background: styleConfig.title.fontWeight
-                            ? 'rgba(var(--semi-blue-1), 1)'
+                            ? 'var(--semi-color-tertiary-light-active)'
                             : '',
                         }}
                         onClick={() => {
@@ -432,7 +448,7 @@ export const ConfigPanel: React.FC<IConfigPanelPropsType> = (props) => {
                         className="flex w-[26px] justify-center rounded-[3px] px-[3px] py-[3px]"
                         style={{
                           background: styleConfig.title.fontStyle
-                            ? 'rgba(var(--semi-blue-1), 1)'
+                            ? 'var(--semi-color-tertiary-light-active)'
                             : '',
                         }}
                         onClick={() => {
@@ -448,7 +464,7 @@ export const ConfigPanel: React.FC<IConfigPanelPropsType> = (props) => {
                         className="flex w-[26px] justify-center rounded-[3px] px-[3px] py-[3px]"
                         style={{
                           background: styleConfig.title.textUnderline
-                            ? 'rgba(var(--semi-blue-1), 1)'
+                            ? 'var(--semi-color-tertiary-light-active)'
                             : '',
                         }}
                         onClick={() => {
@@ -464,7 +480,7 @@ export const ConfigPanel: React.FC<IConfigPanelPropsType> = (props) => {
                         className="flex w-[26px] justify-center rounded-[3px] px-[3px] py-[3px]"
                         style={{
                           background: styleConfig.title.lineThrough
-                            ? 'rgba(var(--semi-blue-1), 1)'
+                            ? 'var(--semi-color-tertiary-light-active)'
                             : '',
                         }}
                         onClick={() => {
@@ -478,7 +494,7 @@ export const ConfigPanel: React.FC<IConfigPanelPropsType> = (props) => {
                       </div>
                     </div>
                   </div>
-                  <div className="flex h-[84px] w-[300px] flex-col gap-[8px] rounded-[6px] bg-[#F5F6F7] px-[8px] py-[8px]">
+                  <div className="bg-[rgba(var(--semi-grey-0), 1)] flex h-[84px] w-[300px] flex-col gap-[8px] rounded-[6px] px-[8px] py-[8px]">
                     <div className="text-[12px] text-[#646A73]">宽度</div>
                     <div className="flex items-center justify-start">
                       <div style={{ width: 217, marginRight: 15 }}>
@@ -509,7 +525,7 @@ export const ConfigPanel: React.FC<IConfigPanelPropsType> = (props) => {
                         }}
                         style={{
                           width: 60,
-                          backgroundColor: '#fff',
+                          backgroundColor: 'rgba(var(--semi-color-bg-1))',
                           outline: 'none',
                           paddingLeft: '0px',
                         }}
@@ -519,16 +535,16 @@ export const ConfigPanel: React.FC<IConfigPanelPropsType> = (props) => {
                 </div>
                 <div className="flex flex-col gap-[12px]">
                   <div>副标题</div>
-                  <div className="flex h-[84px] w-[300px] flex-col gap-[8px] rounded-[6px] bg-[#F5F6F7] px-[8px] py-[8px]">
+                  <div className="bg-[rgba(var(--semi-grey-0), 1)] flex h-[84px] w-[300px] flex-col gap-[8px] rounded-[6px] px-[8px] py-[8px]">
                     <div className="text-[12px] text-[#646A73]">文本格式</div>
-                    <div className="flex h-[42px] w-[284px] items-center justify-center gap-[8px] rounded-[8px] border-[1px] border-solid  border-[#1F2329] bg-[#fff]">
+                    <div className="--semi-color-bg-1 flex h-[42px] w-[284px] items-center justify-center gap-[8px] rounded-[8px] border-[1px]  border-solid border-[#1F2329]">
                       <Select
                         className="select-list"
                         defaultValue={styleConfig.secTitle.fontSize}
                         style={{
                           width: 40,
                           outline: 0,
-                          backgroundColor: '#fff',
+                          backgroundColor: 'rgba(var(--semi-color-bg-1))',
                         }}
                         onChange={(value) => {
                           handleChangeStyleConfigData('secTitle', {
@@ -581,7 +597,7 @@ export const ConfigPanel: React.FC<IConfigPanelPropsType> = (props) => {
                         style={{
                           width: 38,
                           outline: 0,
-                          backgroundColor: '#fff',
+                          backgroundColor: 'rgba(var(--semi-color-bg-1))',
                         }}
                         defaultValue={styleConfig.secTitle.textAlign}
                         prefix={textAlignIcons[styleConfig.secTitle.textAlign]}
@@ -600,7 +616,7 @@ export const ConfigPanel: React.FC<IConfigPanelPropsType> = (props) => {
                         className="flex w-[26px] justify-center "
                         style={{
                           background: styleConfig.secTitle.fontWeight
-                            ? 'rgba(var(--semi-blue-1), 1)'
+                            ? 'var(--semi-color-tertiary-light-active)'
                             : '',
                         }}
                         onClick={() => {
@@ -616,7 +632,7 @@ export const ConfigPanel: React.FC<IConfigPanelPropsType> = (props) => {
                         className="flex w-[26px] justify-center rounded-[3px] px-[3px] py-[3px]"
                         style={{
                           background: styleConfig.secTitle.fontStyle
-                            ? 'rgba(var(--semi-blue-1), 1)'
+                            ? 'var(--semi-color-tertiary-light-active)'
                             : '',
                         }}
                         onClick={() => {
@@ -632,7 +648,7 @@ export const ConfigPanel: React.FC<IConfigPanelPropsType> = (props) => {
                         className="flex w-[26px] justify-center rounded-[3px] px-[3px] py-[3px]"
                         style={{
                           background: styleConfig.secTitle.textUnderline
-                            ? 'rgba(var(--semi-blue-1), 1)'
+                            ? 'var(--semi-color-tertiary-light-active)'
                             : '',
                         }}
                         onClick={() => {
@@ -648,7 +664,7 @@ export const ConfigPanel: React.FC<IConfigPanelPropsType> = (props) => {
                         className="flex w-[26px] justify-center rounded-[3px] px-[3px] py-[3px]"
                         style={{
                           background: styleConfig.secTitle.lineThrough
-                            ? 'rgba(var(--semi-blue-1), 1)'
+                            ? 'var(--semi-color-tertiary-light-active)'
                             : '',
                         }}
                         onClick={() => {
@@ -662,7 +678,7 @@ export const ConfigPanel: React.FC<IConfigPanelPropsType> = (props) => {
                       </div>
                     </div>
                   </div>
-                  <div className="flex h-[84px] w-[300px] flex-col gap-[8px] rounded-[6px] bg-[#F5F6F7] px-[8px] py-[8px]">
+                  <div className="bg-[rgba(var(--semi-grey-0), 1)] flex h-[84px] w-[300px] flex-col gap-[8px] rounded-[6px] px-[8px] py-[8px]">
                     <div className="text-[12px] text-[#646A73]">宽度</div>
                     <div className="flex items-center justify-start">
                       <div style={{ width: 217, marginRight: 15 }}>
@@ -693,7 +709,7 @@ export const ConfigPanel: React.FC<IConfigPanelPropsType> = (props) => {
                         }}
                         style={{
                           width: 60,
-                          backgroundColor: '#fff',
+                          backgroundColor: 'rgba(var(--semi-color-bg-1))',
                           outline: 'none',
                           paddingLeft: '0px',
                         }}
@@ -703,7 +719,7 @@ export const ConfigPanel: React.FC<IConfigPanelPropsType> = (props) => {
                 </div>
                 <div className="flex flex-col gap-[12px]">
                   <div>背景</div>
-                  <div className="flex h-[84px] w-[300px] flex-col gap-[8px] rounded-[6px] bg-[#F5F6F7] px-[8px] py-[8px]">
+                  <div className="bg-[rgba(var(--semi-grey-0), 1)] flex h-[84px] w-[300px] flex-col gap-[8px] rounded-[6px] px-[8px] py-[8px]">
                     <div className="text-[12px] text-[#646A73]">图片透明度</div>
                     <div className="flex items-center justify-start">
                       <div style={{ width: 217, marginRight: 15 }}>
@@ -734,22 +750,21 @@ export const ConfigPanel: React.FC<IConfigPanelPropsType> = (props) => {
                         }}
                         style={{
                           width: 60,
-                          backgroundColor: '#fff',
+                          backgroundColor: 'rgba(var(--semi-color-bg-1))',
                           outline: 'none',
                           paddingLeft: '0px',
                         }}
                       />
                     </div>
                   </div>
-                  <div className="flex h-[84px] w-[300px] flex-col gap-[8px] rounded-[6px] bg-[#F5F6F7] px-[8px] py-[8px]">
+                  <div className="bg-[rgba(var(--semi-grey-0), 1)] flex h-[84px] w-[300px] flex-col gap-[8px] rounded-[6px] px-[8px] py-[8px]">
                     <div className="text-[12px] text-[#646A73]">
                       图片背景颜色
                     </div>
                     <Select
                       style={{
-                        width: 300,
+                        width: 290,
                         outline: 0,
-                        backgroundColor: '#fff',
                       }}
                       defaultValue={styleConfig.background.color}
                       onChange={(value) => {
@@ -767,7 +782,7 @@ export const ConfigPanel: React.FC<IConfigPanelPropsType> = (props) => {
                 </div>
                 <div className="flex flex-col gap-[12px]">
                   <div>指示器</div>
-                  <div className="flex h-[84px] w-[300px] flex-col gap-[8px] rounded-[6px] bg-[#F5F6F7] px-[8px] py-[8px]">
+                  <div className="bg-[rgba(var(--semi-grey-0), 1)] flex h-[84px] w-[300px] flex-col gap-[8px] rounded-[6px] px-[8px] py-[8px]">
                     <div className="text-[12px] text-[#646A73]">数据维度</div>
                     <RadioGroup
                       type="button"
@@ -786,7 +801,7 @@ export const ConfigPanel: React.FC<IConfigPanelPropsType> = (props) => {
                       <Radio value={'columnar'}>柱状</Radio>
                     </RadioGroup>
                   </div>
-                  <div className="flex h-[84px] w-[300px] flex-col gap-[8px] rounded-[6px] bg-[#F5F6F7] px-[8px] py-[8px]">
+                  <div className="bg-[rgba(var(--semi-grey-0), 1)] flex h-[84px] w-[300px] flex-col gap-[8px] rounded-[6px] px-[8px] py-[8px]">
                     <div className="text-[12px] text-[#646A73]">位置</div>
                     <RadioGroup
                       type="button"
@@ -828,7 +843,7 @@ export const ConfigPanel: React.FC<IConfigPanelPropsType> = (props) => {
                 </div>
                 <div className="flex flex-col gap-[12px]">
                   <div>过渡</div>
-                  <div className="flex h-[84px] w-[300px] flex-col gap-[8px] rounded-[6px] bg-[#F5F6F7] px-[8px] py-[8px]">
+                  <div className="bg-[rgba(var(--semi-grey-0), 1)] flex h-[84px] w-[300px] flex-col gap-[8px] rounded-[6px] px-[8px] py-[8px]">
                     <div className="text-[12px] text-[#646A73]">动画</div>
                     <Select
                       style={{
@@ -846,7 +861,7 @@ export const ConfigPanel: React.FC<IConfigPanelPropsType> = (props) => {
                       <Select.Option value="fade">淡入淡出</Select.Option>
                     </Select>
                   </div>
-                  <div className="flex h-[84px] w-[300px] flex-col gap-[8px] rounded-[6px] bg-[#F5F6F7] px-[8px] py-[8px]">
+                  <div className="bg-[rgba(var(--semi-grey-0), 1)] flex h-[84px] w-[300px] flex-col gap-[8px] rounded-[6px] px-[8px] py-[8px]">
                     <div className="text-[12px] text-[#646A73]">间隔</div>
                     <InputNumber
                       value={styleConfig.transition.speed}
@@ -860,7 +875,7 @@ export const ConfigPanel: React.FC<IConfigPanelPropsType> = (props) => {
                         });
                       }}
                       style={{
-                        width: 300,
+                        width: 290,
                       }}
                     />
                   </div>
@@ -870,7 +885,7 @@ export const ConfigPanel: React.FC<IConfigPanelPropsType> = (props) => {
           </Tabs>
         }
       </div>
-      <div className="relative h-[72px] w-[340px] bg-[#fff]">
+      <div className="relative h-[72px] w-[340px] bg-[--semi-color-bg-0]">
         <Button
           className="fixed bottom-[10px] right-[10px] w-[80px]"
           theme="solid"

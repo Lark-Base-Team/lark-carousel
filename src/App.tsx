@@ -5,6 +5,8 @@ import {
   dashboard,
   base,
   IDataRange,
+  bridge,
+  ThemeModeType,
 } from '@lark-base-open/js-sdk';
 import { useEffect, useCallback, useState } from 'react';
 import { useStyleConfigStore, useTypeConfigStore } from '@/store';
@@ -16,7 +18,7 @@ export interface ITableSource {
 
 const App = () => {
   // 类型与数据
-  const { updateTypeConfig } = useTypeConfigStore((state) => state);
+  const { typeConfig, updateTypeConfig } = useTypeConfigStore((state) => state);
 
   // 样式配置数据
   const { updateStyleConfig } = useStyleConfigStore((state) => state);
@@ -75,15 +77,6 @@ const App = () => {
     console.log('自动化 渲染通知--->', renderRes);
   }
 
-  // const switchTheme = (theme: string) => {
-  //   const body = document.body;
-  //   if (body.hasAttribute('theme-mode')) {
-  //     body.removeAttribute('theme-mode');
-  //   } else {
-  //     body.setAttribute('theme-mode', theme);
-  //   }
-  // };
-
   useEffect(() => {
     initConfigData(null);
   }, []);
@@ -91,14 +84,25 @@ const App = () => {
   useEffect(() => {
     async function getConfig() {
       const config = await dashboard.getConfig();
+
       const { typeConfig, styleConfig } = config.customConfig as any;
       updateTypeConfig(typeConfig);
       updateStyleConfig(styleConfig);
       initConfigData(typeConfig.tableId);
+
+      // console.log('tableMeta---->', tableRanges, categories);
     }
     getConfig();
+
     dashboard.onConfigChange(getConfig);
-    // dashboard.onDataChange(() => console.log('dataChange'));
+    // dashboard.onDataChange(async () => {
+    //   console.log('dashbord data change');
+    //   const theme = await bridge.getTheme();
+    //   switchTheme(theme);
+    // });
+    // bridge.onDataChange((event) => {
+    //   console.log('data change', event.data);
+    // });
   }, []);
 
   return (

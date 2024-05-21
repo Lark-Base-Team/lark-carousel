@@ -1,5 +1,4 @@
 import { create } from 'zustand';
-import { IDataRange, SourceType } from '@lark-base-open/js-sdk';
 
 export interface ITypeConfigType {
   tableId: string;
@@ -36,7 +35,7 @@ export const useTypeConfigStore = create<ITypeConfigStore>((set) => ({
 
 export interface IStyleConfigType {
   title: {
-    width: string;
+    width: number;
     fontSize: string;
     color: string;
     textAlign: 'left' | 'center' | 'right';
@@ -46,7 +45,7 @@ export interface IStyleConfigType {
     lineThrough: boolean;
   },
   secTitle: {
-    width: string;
+    width: number;
     fontSize: string;
     color: string;
     textAlign: 'left' | 'center' | 'right';
@@ -80,9 +79,9 @@ interface IStyleConfigStore {
 export const useStyleConfigStore = create<IStyleConfigStore>((set) => ({
   styleConfig: {
     title: {
-      width: '90',
+      width: 90,
       fontSize: '34',
-      textAlign: 'left',
+      textAlign: 'center',
       color: '#000000',
       fontWeight: true,
       fontStyle:  false,
@@ -90,9 +89,9 @@ export const useStyleConfigStore = create<IStyleConfigStore>((set) => ({
       lineThrough: false,
     },
     secTitle: {
-      width: '90',
+      width: 90,
       fontSize: '16',
-      textAlign: 'left',
+      textAlign: 'center',
       color: '#000000',
       fontWeight: false,
       fontStyle:  false,
@@ -112,7 +111,7 @@ export const useStyleConfigStore = create<IStyleConfigStore>((set) => ({
     },
     transition: {
       animation: 'slide',
-      speed: 300
+      speed: 800,
     },
   },
   updateStyleConfig: (styleConfig: IStyleConfigType) => set(() => ({ styleConfig }))
