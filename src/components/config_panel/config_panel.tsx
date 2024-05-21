@@ -188,12 +188,17 @@ export const ConfigPanel: React.FC<IConfigPanelPropsType> = (props) => {
   };
 
   return (
-    <div className="relative flex h-screen w-[350px] flex-col border-l-[1px] border-t-[1px] border-[#ccc] bg-[--semi-color-bg-0]">
+    <div className="relative flex h-screen w-[350px] flex-col border-l-[1px] border-[#ccc] bg-[--semi-color-bg-0]">
       <div className="relative flex-1">
         {
           <Tabs type="line">
             <TabPane tab="类型与数据" itemKey="1">
-              <div className="px-[20px] pb-[48px] pt-[20px]">
+              <div
+                className="overflow-y-scroll px-[20px] pb-[48px] pt-[20px]"
+                style={{
+                  height: `calc(100vh - 125px)`,
+                }}
+              >
                 <Form
                   initValues={typeConfig}
                   onValueChange={(values) => handleFormValueChange(values)}

@@ -39,12 +39,11 @@ export const CarouselComponents: React.FC = () => {
   // 样式配置数据
   const { styleConfig } = useStyleConfigStore((state) => state);
 
-  const [titleList, setTitleList] = useState(defaultList);
+  const [titleList, setTitleList] = useState([]);
 
-  const [secTitleList, setSecTitleList] = useState(defaultSecTitle);
+  const [secTitleList, setSecTitleList] = useState([]);
 
-  const [backgroundImageList, setBackgroundImageList] =
-    useState(defaultImgList);
+  const [backgroundImageList, setBackgroundImageList] = useState([]);
 
   useEffect(() => {
     async function getTableData() {
@@ -115,7 +114,7 @@ export const CarouselComponents: React.FC = () => {
   }, [typeConfig, styleConfig]);
 
   return (
-    <div className="relative h-screen flex-1  border-t-[1px] border-[#ccc]">
+    <div className="relative flex-1 h-screen">
       <Carousel
         style={style}
         theme={typeConfig?.theme}
@@ -134,7 +133,8 @@ export const CarouselComponents: React.FC = () => {
                 item +
                 titleList[index] +
                 secTitleList[index] +
-                backgroundImageList[index]
+                backgroundImageList[index] +
+                index
               }
               style={{
                 backgroundSize: 'cover',
