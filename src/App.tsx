@@ -71,6 +71,8 @@ const App = () => {
 
     setTableSource([...tableList]);
     // console.log('tableMeta---->', tableRanges, categories);
+    const renderRes = await dashboard.setRendered();
+    console.log('自动化 渲染通知--->', renderRes);
   }
 
   // const switchTheme = (theme: string) => {
