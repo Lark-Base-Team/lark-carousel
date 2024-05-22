@@ -72,7 +72,7 @@ const App = () => {
     setCategories([{ id: 'hidden', name: '隐藏', type: -1 }, ...categories]);
 
     setTableSource([...tableList]);
-    // console.log('tableMeta---->', tableRanges, categories);
+    console.log('tableMeta---->', tableRanges);
     const renderRes = await dashboard.setRendered();
     console.log('自动化 渲染通知--->', renderRes);
   }
@@ -95,14 +95,6 @@ const App = () => {
     getConfig();
 
     dashboard.onConfigChange(getConfig);
-    // dashboard.onDataChange(async () => {
-    //   console.log('dashbord data change');
-    //   const theme = await bridge.getTheme();
-    //   switchTheme(theme);
-    // });
-    // bridge.onDataChange((event) => {
-    //   console.log('data change', event.data);
-    // });
   }, []);
 
   return (

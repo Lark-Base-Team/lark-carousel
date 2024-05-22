@@ -1,4 +1,11 @@
-import { dashboard, bridge, ThemeModeType } from '@lark-base-open/js-sdk';
+import {
+  dashboard,
+  bridge,
+  ThemeModeType,
+  SourceType,
+  IDataRange,
+  FieldType,
+} from '@lark-base-open/js-sdk';
 import { useEffect, useRef } from 'react';
 import {
   Tabs,
@@ -11,7 +18,6 @@ import {
   Radio,
   Button,
 } from '@douyinfe/semi-ui';
-import { SourceType, IDataRange, FieldType } from '@lark-base-open/js-sdk';
 import {
   IconAlignLeft,
   IconAlignRight,
@@ -19,9 +25,12 @@ import {
   IconFont,
   IconChevronDown,
 } from '@douyinfe/semi-icons';
-import { TextBold, TextItalic, TextUnderline } from '@icon-park/react';
 import { useTypeConfigStore, useStyleConfigStore } from '@/store';
 import { ITableSource } from '../../App';
+import HorizontalLine from '@/assets/svg/horizontal-line.svg?react';
+import BoldIcon from '@/assets/svg/bold.svg?react';
+import ItalicIcon from '@/assets/svg/italic.svg?react';
+import UnderlineIcon from '@/assets/svg/underline.svg?react';
 
 import './index.css';
 
@@ -52,19 +61,6 @@ export const ConfigPanel: React.FC<IConfigPanelPropsType> = (props) => {
   );
 
   const { Option } = Form.Select;
-
-  // const initValues = useMemo(() => {
-  //   return {
-  //     tableId: tableSource[0]?.tableId || '',
-  //     rowRange: dataRange[0].type || '',
-  //     title: 'hidden',
-  //     secTitle: 'hidden',
-  //     backGround: 'hidden',
-  //     rowLength: 3,
-  //     theme: 'dark',
-  //     control: ['indicator', 'arrow'],
-  //   };
-  // }, [tableSource, dataRange]);
 
   const switchTheme = (theme: string) => {
     const body = document.body;
@@ -126,7 +122,6 @@ export const ConfigPanel: React.FC<IConfigPanelPropsType> = (props) => {
 
   // 样式数据更改
   const handleChangeStyleConfigData = (filedName: string, value: any) => {
-    console.log('样式数据更改----》', filedName, value);
     const newStyleConfigData = {
       ...styleConfig,
       [filedName]: value,
@@ -354,7 +349,7 @@ export const ConfigPanel: React.FC<IConfigPanelPropsType> = (props) => {
                   <div>标题</div>
                   <div className="bg-[rgba(var(--semi-grey-0), 1)] flex h-[84px] w-[300px] flex-col gap-[8px] rounded-[6px] px-[8px] py-[8px]">
                     <div className="text-[12px] text-[#646A73]">文本格式</div>
-                    <div className="--semi-color-bg-1 flex h-[42px] w-[284px] items-center justify-center gap-[8px] rounded-[8px] border-[1px]  border-solid border-[#1F2329]">
+                    <div className="bg[--semi-color-bg-1] flex h-[42px] w-[284px] items-center  gap-[8px] rounded-[8px] border-[1px] border-solid  border-[#1F2329] px-[10px]">
                       <Select
                         className="select-list"
                         defaultValue={styleConfig.title.fontSize}
@@ -432,7 +427,7 @@ export const ConfigPanel: React.FC<IConfigPanelPropsType> = (props) => {
                         className="flex w-[26px] justify-center rounded-[3px] px-[3px] py-[3px]"
                         style={{
                           background: styleConfig.title.fontWeight
-                            ? 'var(--semi-color-tertiary-light-active)'
+                            ? 'var(--semi-color-tertiary-light-hover)'
                             : '',
                         }}
                         onClick={() => {
@@ -442,7 +437,7 @@ export const ConfigPanel: React.FC<IConfigPanelPropsType> = (props) => {
                           });
                         }}
                       >
-                        <TextBold theme="outline" size="16" fill="#333" />
+                        <BoldIcon theme="outline" size="16" fill="#333" />
                       </div>
                       <div
                         className="flex w-[26px] justify-center rounded-[3px] px-[3px] py-[3px]"
@@ -458,7 +453,7 @@ export const ConfigPanel: React.FC<IConfigPanelPropsType> = (props) => {
                           });
                         }}
                       >
-                        <TextItalic theme="outline" size="16" fill="#333" />
+                        <ItalicIcon theme="outline" size="16" fill="#333" />
                       </div>
                       <div
                         className="flex w-[26px] justify-center rounded-[3px] px-[3px] py-[3px]"
@@ -474,7 +469,7 @@ export const ConfigPanel: React.FC<IConfigPanelPropsType> = (props) => {
                           });
                         }}
                       >
-                        <TextUnderline theme="outline" size="16" fill="#333" />
+                        <UnderlineIcon theme="outline" size="16" fill="#333" />
                       </div>
                       <div
                         className="flex w-[26px] justify-center rounded-[3px] px-[3px] py-[3px]"
@@ -490,7 +485,7 @@ export const ConfigPanel: React.FC<IConfigPanelPropsType> = (props) => {
                           });
                         }}
                       >
-                        <TextUnderline theme="outline" size="16" fill="#333" />
+                        <HorizontalLine theme="outline" size="16" fill="#333" />
                       </div>
                     </div>
                   </div>
@@ -537,7 +532,7 @@ export const ConfigPanel: React.FC<IConfigPanelPropsType> = (props) => {
                   <div>副标题</div>
                   <div className="bg-[rgba(var(--semi-grey-0), 1)] flex h-[84px] w-[300px] flex-col gap-[8px] rounded-[6px] px-[8px] py-[8px]">
                     <div className="text-[12px] text-[#646A73]">文本格式</div>
-                    <div className="--semi-color-bg-1 flex h-[42px] w-[284px] items-center justify-center gap-[8px] rounded-[8px] border-[1px]  border-solid border-[#1F2329]">
+                    <div className="--semi-color-bg-1 flex h-[42px] w-[284px] items-center justify-center gap-[8px] rounded-[8px] border-[1px]  border-solid border-[#1F2329] px-[10px]">
                       <Select
                         className="select-list"
                         defaultValue={styleConfig.secTitle.fontSize}
@@ -626,7 +621,7 @@ export const ConfigPanel: React.FC<IConfigPanelPropsType> = (props) => {
                           });
                         }}
                       >
-                        <TextBold theme="outline" size="16" fill="#333" />
+                        <BoldIcon theme="outline" size="16" fill="#333" />
                       </div>
                       <div
                         className="flex w-[26px] justify-center rounded-[3px] px-[3px] py-[3px]"
@@ -642,7 +637,7 @@ export const ConfigPanel: React.FC<IConfigPanelPropsType> = (props) => {
                           });
                         }}
                       >
-                        <TextItalic theme="outline" size="16" fill="#333" />
+                        <ItalicIcon theme="outline" size="16" fill="#333" />
                       </div>
                       <div
                         className="flex w-[26px] justify-center rounded-[3px] px-[3px] py-[3px]"
@@ -658,7 +653,7 @@ export const ConfigPanel: React.FC<IConfigPanelPropsType> = (props) => {
                           });
                         }}
                       >
-                        <TextUnderline theme="outline" size="16" fill="#333" />
+                        <UnderlineIcon theme="outline" size="16" fill="#333" />
                       </div>
                       <div
                         className="flex w-[26px] justify-center rounded-[3px] px-[3px] py-[3px]"
@@ -674,7 +669,7 @@ export const ConfigPanel: React.FC<IConfigPanelPropsType> = (props) => {
                           });
                         }}
                       >
-                        <TextUnderline theme="outline" size="16" fill="#333" />
+                        <HorizontalLine theme="outline" size="16" fill="#333" />
                       </div>
                     </div>
                   </div>
