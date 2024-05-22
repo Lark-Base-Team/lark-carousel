@@ -58,8 +58,12 @@
 }
 
 .selectColorDrop {
+  padding: 10px 10px;
+}
+
+.selectColorDrop > .semi-select-option-list {
   display: flex;
   justify-content: start;
   gap: 5px;
-  padding: 5px 5px;
+  flex-wrap: wrap;
 }

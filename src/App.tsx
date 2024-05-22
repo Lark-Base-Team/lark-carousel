@@ -5,8 +5,6 @@ import {
   dashboard,
   base,
   IDataRange,
-  bridge,
-  ThemeModeType,
 } from '@lark-base-open/js-sdk';
 import { useEffect, useCallback, useState } from 'react';
 import { useStyleConfigStore, useTypeConfigStore } from '@/store';

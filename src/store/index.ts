@@ -100,7 +100,7 @@ export const useStyleConfigStore = create<IStyleConfigStore>((set) => ({
     },
     background: {
       opacity: 90,
-      color: '#FFFFFF',
+      color: 'rgba(255, 255, 255, 1)',
     },
     indicator: {
       type: 'dot',

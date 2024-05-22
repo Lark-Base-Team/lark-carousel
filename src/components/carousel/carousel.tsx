@@ -113,6 +113,21 @@ export const CarouselComponents: React.FC = () => {
     return Array(typeConfig.rowLength).fill(JSON.stringify(new Date()));
   }, [typeConfig, styleConfig]);
 
+  function convertColorWithOpacity(color: string, opacity: number): string {
+    // 从 color 中提取 RGB 值
+    const rgbValues = color.match(/\d+/g)?.map(Number);
+    console.log('rgbValues--->', rgbValues, color, opacity)
+    if (!rgbValues || rgbValues.length !== 4) {
+      return ''
+    }
+  
+    // 计算新的 alpha 值
+    const newAlpha = opacity / 100;
+  
+    // 构建新的 rgba 字符串
+    return `rgba(${rgbValues[0]}, ${rgbValues[1]}, ${rgbValues[2]}, ${newAlpha})`;
+  }
+
   return (
     <div className="relative flex-1 h-screen">
       <Carousel
@@ -144,9 +159,7 @@ export const CarouselComponents: React.FC = () => {
                     : ''
                 })`,
                 // backgroundImage: `url(${backgroundImageList[index]})`,
-                // backgroundColor: `rgb(0,0,0,${
-                //   styleConfig.background.opacity / 100
-                // })`,
+                backgroundColor: convertColorWithOpacity(styleConfig.background.color, styleConfig.background.opacity),
               }}
             >
               <div className="flex flex-col items-center justify-center w-full h-full">
