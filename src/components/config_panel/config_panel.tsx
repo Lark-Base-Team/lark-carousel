@@ -227,7 +227,7 @@ export const ConfigPanel: React.FC<IConfigPanelPropsType> = (props) => {
                       // 更改表格的时候重置其他的默认数据
                       const newConfig = {
                         ...otherProperties,
-                        rowRange: dataRange[0].type || '',
+                        rowRange: 'All',
                         title: 'hidden',
                         secTitle: 'hidden',
                         backGround: 'hidden',
