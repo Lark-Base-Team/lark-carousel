@@ -6,10 +6,11 @@ import path from 'path';
 import { semiTheming } from "vite-plugin-semi-theming";
 
 export default defineConfig({
+  base: './',
   plugins: [
     semiTheming({
       theme: "@semi-bot/semi-theme-feishu-dashboard",
-  }),
+    }),
     react(),
     eslintPlugin(),
     svgr(),
