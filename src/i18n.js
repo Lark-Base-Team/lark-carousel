@@ -13,8 +13,8 @@ i18n
   // 初始化 i18next
   // 配置参数的文档: https://www.i18next.com/overview/configuration-options
   .init({
-    debug: false,
-    fallbackLng: 'en',
+    debug: true,
+    fallbackLng: 'zh-CN',
     interpolation: {
       escapeValue: false,
     },

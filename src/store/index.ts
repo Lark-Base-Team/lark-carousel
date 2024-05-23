@@ -29,9 +29,8 @@ export const useTypeConfigStore = create<ITypeConfigStore>((set) => ({
     control: ['indicator', 'arrow'],
     update: 'update'
   },
-  updateTypeConfig: (typeConfig) => set(() => ({ typeConfig }))
+  updateTypeConfig: (typeConfig) => set(() => ({ typeConfig })),
 }));
-
 
 export interface IStyleConfigType {
   title: {
@@ -40,35 +39,35 @@ export interface IStyleConfigType {
     color: string;
     textAlign: 'left' | 'center' | 'right';
     fontWeight: boolean;
-    fontStyle:  boolean;
+    fontStyle: boolean;
     textUnderline: boolean;
     lineThrough: boolean;
-  },
+  };
   secTitle: {
     width: number;
     fontSize: string;
     color: string;
     textAlign: 'left' | 'center' | 'right';
     fontWeight: boolean;
-    fontStyle:  boolean;
+    fontStyle: boolean;
     textUnderline: boolean;
     lineThrough: boolean;
-  },
+  };
   background: {
     opacity: number;
     color: string;
-  },
+  };
   indicator: {
-    type: 'dot' | 'line' | 'columnar',
-    position: 'left' | 'center' | 'right',
-  },
+    type: 'dot' | 'line' | 'columnar';
+    position: 'left' | 'center' | 'right';
+  };
   arrow: {
-    type: 'always' | 'hover',
-  },
+    type: 'always' | 'hover';
+  };
   transition: {
-    animation: 'fade' | 'slide',
-    speed: number
-  }
+    animation: 'fade' | 'slide';
+    speed: number;
+  };
 }
 
 interface IStyleConfigStore {

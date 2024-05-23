@@ -16,7 +16,7 @@ export interface ITableSource {
 
 const App = () => {
   // 类型与数据
-  const { typeConfig, updateTypeConfig } = useTypeConfigStore((state) => state);
+  const { updateTypeConfig } = useTypeConfigStore((state) => state);
 
   // 样式配置数据
   const { updateStyleConfig } = useStyleConfigStore((state) => state);

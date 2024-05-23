@@ -25,7 +25,7 @@ module.exports = {
     'plugin:react-hooks/recommended',
   ],
   rules: {
-    "react/prop-types": "off",
+    'react/prop-types': 'off',
   },
   globals: {
     Edit: 'writable',

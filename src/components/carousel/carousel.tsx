@@ -15,7 +15,6 @@ export const CarouselComponents: React.FC = () => {
     'https://lf3-static.bytednsdoc.com/obj/eden-cn/hjeh7pldnulm/SemiDocs/bg-3.png',
     'https://lf3-static.bytednsdoc.com/obj/eden-cn/hjeh7pldnulm/SemiDocs/bg-2.png',
     'https://lf3-static.bytednsdoc.com/obj/eden-cn/hjeh7pldnulm/SemiDocs/bg-3.png',
-    ,
   ];
 
   const defaultList = [
@@ -116,14 +115,14 @@ export const CarouselComponents: React.FC = () => {
   function convertColorWithOpacity(color: string, opacity: number): string {
     // 从 color 中提取 RGB 值
     const rgbValues = color.match(/\d+/g)?.map(Number);
-    console.log('rgbValues--->', rgbValues, color, opacity)
+    console.log('rgbValues--->', rgbValues, color, opacity);
     if (!rgbValues || rgbValues.length !== 4) {
-      return ''
+      return '';
     }
-  
+
     // 计算新的 alpha 值
     const newAlpha = opacity / 100;
-  
+
     // 构建新的 rgba 字符串
     return `rgba(${rgbValues[0]}, ${rgbValues[1]}, ${rgbValues[2]}, ${newAlpha})`;
   }
@@ -159,7 +158,10 @@ export const CarouselComponents: React.FC = () => {
                     : ''
                 })`,
                 // backgroundImage: `url(${backgroundImageList[index]})`,
-                backgroundColor: convertColorWithOpacity(styleConfig.background.color, styleConfig.background.opacity),
+                backgroundColor: convertColorWithOpacity(
+                  styleConfig.background.color,
+                  styleConfig.background.opacity,
+                ),
               }}
             >
               <div className="flex flex-col items-center justify-center w-full h-full">

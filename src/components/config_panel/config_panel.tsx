@@ -31,6 +31,7 @@ import HorizontalLine from '@/assets/svg/horizontal-line.svg?react';
 import BoldIcon from '@/assets/svg/bold.svg?react';
 import ItalicIcon from '@/assets/svg/italic.svg?react';
 import UnderlineIcon from '@/assets/svg/underline.svg?react';
+import { useTranslation } from 'react-i18next';
 
 import './index.css';
 
@@ -49,6 +50,8 @@ interface IConfigPanelPropsType {
 
 export const ConfigPanel: React.FC<IConfigPanelPropsType> = (props) => {
   const { tableSource, dataRange, categories, getTableConfig } = props;
+
+  const { t, i18n } = useTranslation();
 
   // 类型与数据
   const { typeConfig, updateTypeConfig } = useTypeConfigStore((state) => state);
@@ -80,9 +83,14 @@ export const ConfigPanel: React.FC<IConfigPanelPropsType> = (props) => {
       updateStyleConfig(styleConfig);
       getTableConfig(typeConfig.tableId);
 
+      // 主题
       const theme = await bridge.getTheme();
       console.log('theme 更改----》', theme);
       switchTheme(theme);
+
+      // 语言
+      const locale = await bridge.getLocale();
+      i18n.changeLanguage(locale);
 
       if (!formApi.current) return;
       // 更新
@@ -150,7 +158,6 @@ export const ConfigPanel: React.FC<IConfigPanelPropsType> = (props) => {
     { label: '', value: 'rgba(255, 198, 10, 1)' },
     { label: '', value: 'rgba(255, 129, 26, 1)' },
     { label: '', value: 'rgba(245, 74, 69, 1)' },
-
   ];
 
   const renderOptionItem = (renderProps: any) => {
@@ -211,7 +218,7 @@ export const ConfigPanel: React.FC<IConfigPanelPropsType> = (props) => {
       <div className="relative flex-1">
         {
           <Tabs type="line">
-            <TabPane tab="类型与数据" itemKey="1">
+            <TabPane tab={t('tab_name1')} itemKey="1">
               <div
                 className="overflow-y-scroll px-[20px] pb-[48px] pt-[20px]"
                 style={{
@@ -226,7 +233,7 @@ export const ConfigPanel: React.FC<IConfigPanelPropsType> = (props) => {
                 >
                   <Form.Select
                     field="tableId"
-                    label={{ text: '数据源' }}
+                    label={{ text: t('data_source') }}
                     style={{ width: 300 }}
                     onChange={(selectValue) => {
                       getTableConfig(selectValue as string);
@@ -250,7 +257,7 @@ export const ConfigPanel: React.FC<IConfigPanelPropsType> = (props) => {
                   />
                   <Form.Select
                     field="rowRange"
-                    label={{ text: '数据范围' }}
+                    label={{ text: t('data_range') }}
                     style={{ width: 300 }}
                     remote={true}
                     optionList={dataRange.map((range) => {
@@ -258,7 +265,7 @@ export const ConfigPanel: React.FC<IConfigPanelPropsType> = (props) => {
                       if (type === SourceType.ALL) {
                         return {
                           value: 'All',
-                          label: '查看全部',
+                          label: t('view_all'),
                         };
                       } else {
                         return {
@@ -271,7 +278,7 @@ export const ConfigPanel: React.FC<IConfigPanelPropsType> = (props) => {
                   <div className="my-[10px] h-[0.5px] w-[300px] bg-[#1F232926]"></div>
                   <Form.Select
                     field="title"
-                    label={{ text: '标题' }}
+                    label={{ text: t('title') }}
                     style={{ width: 300 }}
                     optionList={categories
                       .filter((category) =>
@@ -288,7 +295,7 @@ export const ConfigPanel: React.FC<IConfigPanelPropsType> = (props) => {
 
                   <Form.Select
                     field="secTitle"
-                    label={{ text: '副标题' }}
+                    label={{ text: t('sec_title') }}
                     style={{ width: 300 }}
                     optionList={categories
                       .filter((category) =>
@@ -304,7 +311,7 @@ export const ConfigPanel: React.FC<IConfigPanelPropsType> = (props) => {
                   />
                   <Form.Select
                     field="backGround"
-                    label={{ text: '背景图' }}
+                    label={{ text: t('background_image') }}
                     style={{ width: 300 }}
                     optionList={categories
                       .filter((category) =>
@@ -320,7 +327,7 @@ export const ConfigPanel: React.FC<IConfigPanelPropsType> = (props) => {
                   />
                   <Form.InputNumber
                     field="rowLength"
-                    label={{ text: '记录数' }}
+                    label={{ text: t('records') }}
                     min={1}
                     max={20}
                     style={{ width: 300 }}
@@ -328,25 +335,26 @@ export const ConfigPanel: React.FC<IConfigPanelPropsType> = (props) => {
                   <div className="my-[10px] h-[0.5px] w-[300px] bg-[#1F232926]"></div>
                   <Form.Select
                     field="theme"
-                    label={{ text: '主题' }}
+                    label={{ text: t('theme') }}
                     style={{ width: 300 }}
                   >
-                    <Option value="light">浅色</Option>
-                    <Option value="dark">深色</Option>
+                    <Option value="light">{t('light')}</Option>
+                    <Option value="dark">{t('dark')}</Option>
                   </Form.Select>
                   <Form.CheckboxGroup
                     field="control"
-                    label={{ text: '轮播图选项' }}
-                    aria-label="轮播图选项"
+                    label={{ text: t('carousel_options') }}
                     direction="horizontal"
                   >
-                    <Form.Checkbox value="indicator">指示器</Form.Checkbox>
-                    <Form.Checkbox value="arrow">箭头</Form.Checkbox>
+                    <Form.Checkbox value="indicator">
+                      {t('indicator')}
+                    </Form.Checkbox>
+                    <Form.Checkbox value="arrow">{t('arrow')}</Form.Checkbox>
                   </Form.CheckboxGroup>
                 </Form>
               </div>
             </TabPane>
-            <TabPane tab="自定义样式" itemKey="2">
+            <TabPane tab={t('tab_name2')} itemKey="2">
               <div
                 className="flex flex-col gap-[16px] overflow-y-scroll px-[20px] pb-[48px] pt-[20px]"
                 style={{
@@ -354,9 +362,11 @@ export const ConfigPanel: React.FC<IConfigPanelPropsType> = (props) => {
                 }}
               >
                 <div className="flex flex-1 flex-col gap-[12px]">
-                  <div>标题</div>
-                  <div className="bg-[--semi-color-tertiary-light-default] flex h-[84px] w-[300px] flex-col gap-[8px] rounded-[6px] px-[8px] py-[8px]">
-                    <div className="text-[12px] text-[#646A73]">文本格式</div>
+                  <div>{t('title')}</div>
+                  <div className="flex h-[84px] w-[300px] flex-col gap-[8px] rounded-[6px] bg-[--semi-color-tertiary-light-default] px-[8px] py-[8px]">
+                    <div className="text-[12px] text-[#646A73]">
+                      {t('text_format')}
+                    </div>
                     <div className="bg[--semi-color-bg-1] flex h-[42px] w-[284px] items-center  gap-[8px] rounded-[8px] border-[1px] border-solid  border-[#1F2329] px-[10px]">
                       <Select
                         className="select-list"
@@ -427,9 +437,15 @@ export const ConfigPanel: React.FC<IConfigPanelPropsType> = (props) => {
                           });
                         }}
                       >
-                        <Select.Option value="left">左对齐</Select.Option>
-                        <Select.Option value="center">中心对齐</Select.Option>
-                        <Select.Option value="right">向右对齐</Select.Option>
+                        <Select.Option value="left">
+                          {t('left_aligned')}
+                        </Select.Option>
+                        <Select.Option value="center">
+                          {t('center_aligned')}
+                        </Select.Option>
+                        <Select.Option value="right">
+                          {t('right_aligned')}
+                        </Select.Option>
                       </Select>
                       <div
                         className="flex w-[26px] justify-center rounded-[3px] px-[3px] py-[3px]"
@@ -445,7 +461,11 @@ export const ConfigPanel: React.FC<IConfigPanelPropsType> = (props) => {
                           });
                         }}
                       >
-                        <BoldIcon className="w-[16px] h-[16px]" size="16" fill='var(--semi-color-text-0)' />
+                        <BoldIcon
+                          className="h-[16px] w-[16px]"
+                          size="16"
+                          fill="var(--semi-color-text-0)"
+                        />
                       </div>
                       <div
                         className="flex w-[26px] justify-center rounded-[3px] px-[3px] py-[3px]"
@@ -461,7 +481,11 @@ export const ConfigPanel: React.FC<IConfigPanelPropsType> = (props) => {
                           });
                         }}
                       >
-                        <ItalicIcon className="w-[16px] h-[16px]" size="16" fill='var(--semi-color-text-0)' />
+                        <ItalicIcon
+                          className="h-[16px] w-[16px]"
+                          size="16"
+                          fill="var(--semi-color-text-0)"
+                        />
                       </div>
                       <div
                         className="flex w-[26px] justify-center rounded-[3px] px-[3px] py-[3px]"
@@ -477,7 +501,11 @@ export const ConfigPanel: React.FC<IConfigPanelPropsType> = (props) => {
                           });
                         }}
                       >
-                        <UnderlineIcon className="w-[16px] h-[16px]" size="16" fill='var(--semi-color-text-0)' />
+                        <UnderlineIcon
+                          className="h-[16px] w-[16px]"
+                          size="16"
+                          fill="var(--semi-color-text-0)"
+                        />
                       </div>
                       <div
                         className="flex w-[26px] justify-center rounded-[3px] px-[3px] py-[3px]"
@@ -493,12 +521,18 @@ export const ConfigPanel: React.FC<IConfigPanelPropsType> = (props) => {
                           });
                         }}
                       >
-                        <HorizontalLine className="w-[16px] h-[16px]" size="16" fill='var(--semi-color-text-0)' />
+                        <HorizontalLine
+                          className="h-[16px] w-[16px]"
+                          size="16"
+                          fill="var(--semi-color-text-0)"
+                        />
                       </div>
                     </div>
                   </div>
-                  <div className="bg-[--semi-color-tertiary-light-default] flex h-[84px] w-[300px] flex-col gap-[8px] rounded-[6px] px-[8px] py-[8px]">
-                    <div className="text-[12px] text-[#646A73]">宽度</div>
+                  <div className="flex h-[84px] w-[300px] flex-col gap-[8px] rounded-[6px] bg-[--semi-color-tertiary-light-default] px-[8px] py-[8px]">
+                    <div className="text-[12px] text-[#646A73]">
+                      {t('width')}
+                    </div>
                     <div className="flex items-center justify-start">
                       <div style={{ width: 217, marginRight: 15 }}>
                         <Slider
@@ -537,9 +571,11 @@ export const ConfigPanel: React.FC<IConfigPanelPropsType> = (props) => {
                   </div>
                 </div>
                 <div className="flex flex-col gap-[12px]">
-                  <div>副标题</div>
-                  <div className="bg-[--semi-color-tertiary-light-default] flex h-[84px] w-[300px] flex-col gap-[8px] rounded-[6px] px-[8px] py-[8px]">
-                    <div className="text-[12px] text-[#646A73]">文本格式</div>
+                  <div>{t('sec_title')}</div>
+                  <div className="flex h-[84px] w-[300px] flex-col gap-[8px] rounded-[6px] bg-[--semi-color-tertiary-light-default] px-[8px] py-[8px]">
+                    <div className="text-[12px] text-[#646A73]">
+                      {t('text_format')}
+                    </div>
                     <div className="--semi-color-bg-1 flex h-[42px] w-[284px] items-center justify-center gap-[8px] rounded-[8px] border-[1px]  border-solid border-[#1F2329] px-[10px]">
                       <Select
                         className="select-list"
@@ -611,9 +647,15 @@ export const ConfigPanel: React.FC<IConfigPanelPropsType> = (props) => {
                           });
                         }}
                       >
-                        <Select.Option value="left">左对齐</Select.Option>
-                        <Select.Option value="center">中心对齐</Select.Option>
-                        <Select.Option value="right">向右对齐</Select.Option>
+                        <Select.Option value="left">
+                          {t('left_aligned')}
+                        </Select.Option>
+                        <Select.Option value="center">
+                          {t('center_aligned')}
+                        </Select.Option>
+                        <Select.Option value="right">
+                          {t('right_aligned')}
+                        </Select.Option>
                       </Select>
                       <div
                         className="flex w-[26px] justify-center "
@@ -629,7 +671,11 @@ export const ConfigPanel: React.FC<IConfigPanelPropsType> = (props) => {
                           });
                         }}
                       >
-                        <BoldIcon className="w-[16px] h-[16px]" size="16" fill='var(--semi-color-text-0)'/>
+                        <BoldIcon
+                          className="h-[16px] w-[16px]"
+                          size="16"
+                          fill="var(--semi-color-text-0)"
+                        />
                       </div>
                       <div
                         className="flex w-[26px] justify-center rounded-[3px] px-[3px] py-[3px]"
@@ -645,7 +691,11 @@ export const ConfigPanel: React.FC<IConfigPanelPropsType> = (props) => {
                           });
                         }}
                       >
-                        <ItalicIcon className="w-[16px] h-[16px]" size="16" fill='var(--semi-color-text-0)' />
+                        <ItalicIcon
+                          className="h-[16px] w-[16px]"
+                          size="16"
+                          fill="var(--semi-color-text-0)"
+                        />
                       </div>
                       <div
                         className="flex w-[26px] justify-center rounded-[3px] px-[3px] py-[3px]"
@@ -661,7 +711,11 @@ export const ConfigPanel: React.FC<IConfigPanelPropsType> = (props) => {
                           });
                         }}
                       >
-                        <UnderlineIcon className="w-[16px] h-[16px]" size="16" fill='var(--semi-color-text-0)'/>
+                        <UnderlineIcon
+                          className="h-[16px] w-[16px]"
+                          size="16"
+                          fill="var(--semi-color-text-0)"
+                        />
                       </div>
                       <div
                         className="flex w-[26px] justify-center rounded-[3px] px-[3px] py-[3px]"
@@ -677,12 +731,18 @@ export const ConfigPanel: React.FC<IConfigPanelPropsType> = (props) => {
                           });
                         }}
                       >
-                        <HorizontalLine className="w-[16px] h-[16px]" size="16" fill='var(--semi-color-text-0)' />
+                        <HorizontalLine
+                          className="h-[16px] w-[16px]"
+                          size="16"
+                          fill="var(--semi-color-text-0)"
+                        />
                       </div>
                     </div>
                   </div>
-                  <div className="bg-[--semi-color-tertiary-light-default] flex h-[84px] w-[300px] flex-col gap-[8px] rounded-[6px] px-[8px] py-[8px]">
-                    <div className="text-[12px] text-[#646A73]">宽度</div>
+                  <div className="flex h-[84px] w-[300px] flex-col gap-[8px] rounded-[6px] bg-[--semi-color-tertiary-light-default] px-[8px] py-[8px]">
+                    <div className="text-[12px] text-[#646A73]">
+                      {t('width')}
+                    </div>
                     <div className="flex items-center justify-start">
                       <div style={{ width: 217, marginRight: 15 }}>
                         <Slider
@@ -721,9 +781,11 @@ export const ConfigPanel: React.FC<IConfigPanelPropsType> = (props) => {
                   </div>
                 </div>
                 <div className="flex flex-col gap-[12px]">
-                  <div>背景</div>
-                  <div className="bg-[--semi-color-tertiary-light-default] flex h-[84px] w-[300px] flex-col gap-[8px] rounded-[6px] px-[8px] py-[8px]">
-                    <div className="text-[12px] text-[#646A73]">图片透明度</div>
+                  <div>{t('background')}</div>
+                  <div className="flex h-[84px] w-[300px] flex-col gap-[8px] rounded-[6px] bg-[--semi-color-tertiary-light-default] px-[8px] py-[8px]">
+                    <div className="text-[12px] text-[#646A73]">
+                      {t('image_transparency')}
+                    </div>
                     <div className="flex items-center justify-start">
                       <div style={{ width: 217, marginRight: 15 }}>
                         <Slider
@@ -760,9 +822,9 @@ export const ConfigPanel: React.FC<IConfigPanelPropsType> = (props) => {
                       />
                     </div>
                   </div>
-                  <div className="bg-[--semi-color-tertiary-light-default] flex h-[84px] w-[300px] flex-col gap-[8px] rounded-[6px] px-[8px] py-[8px]">
+                  <div className="flex h-[84px] w-[300px] flex-col gap-[8px] rounded-[6px] bg-[--semi-color-tertiary-light-default] px-[8px] py-[8px]">
                     <div className="text-[12px] text-[#646A73]">
-                      图片背景颜色
+                      {t('image_background_color')}
                     </div>
                     <Select
                       style={{
@@ -785,9 +847,11 @@ export const ConfigPanel: React.FC<IConfigPanelPropsType> = (props) => {
                   </div>
                 </div>
                 <div className="flex flex-col gap-[12px]">
-                  <div>指示器</div>
-                  <div className="bg-[--semi-color-tertiary-light-default] flex h-[84px] w-[300px] flex-col gap-[8px] rounded-[6px] px-[8px] py-[8px]">
-                    <div className="text-[12px] text-[#646A73]">数据维度</div>
+                  <div>{t('indicator')}</div>
+                  <div className="flex h-[84px] w-[300px] flex-col gap-[8px] rounded-[6px] bg-[--semi-color-tertiary-light-default] px-[8px] py-[8px]">
+                    <div className="text-[12px] text-[#646A73]">
+                      {t('data_dimensions')}
+                    </div>
                     <RadioGroup
                       type="button"
                       buttonSize="small"
@@ -800,13 +864,15 @@ export const ConfigPanel: React.FC<IConfigPanelPropsType> = (props) => {
                         });
                       }}
                     >
-                      <Radio value={'dot'}>点状</Radio>
-                      <Radio value={'line'}>线状</Radio>
-                      <Radio value={'columnar'}>柱状</Radio>
+                      <Radio value={'dot'}>{t('dotted')}</Radio>
+                      <Radio value={'line'}>{t('linear')}</Radio>
+                      <Radio value={'columnar'}>{t('columnar')}</Radio>
                     </RadioGroup>
                   </div>
-                  <div className="bg-[--semi-color-tertiary-light-default] flex h-[84px] w-[300px] flex-col gap-[8px] rounded-[6px] px-[8px] py-[8px]">
-                    <div className="text-[12px] text-[#646A73]">位置</div>
+                  <div className="flex h-[84px] w-[300px] flex-col gap-[8px] rounded-[6px] bg-[--semi-color-tertiary-light-default] px-[8px] py-[8px]">
+                    <div className="text-[12px] text-[#646A73]">
+                      {t('position')}
+                    </div>
                     <RadioGroup
                       type="button"
                       buttonSize="small"
@@ -819,14 +885,14 @@ export const ConfigPanel: React.FC<IConfigPanelPropsType> = (props) => {
                         });
                       }}
                     >
-                      <Radio value={'left'}>居左</Radio>
-                      <Radio value={'center'}>居中</Radio>
-                      <Radio value={'right'}>居右</Radio>
+                      <Radio value={'left'}>{t('居左')}</Radio>
+                      <Radio value={'center'}>{t('居中')}</Radio>
+                      <Radio value={'right'}>{t('居右')}</Radio>
                     </RadioGroup>
                   </div>
                 </div>
                 <div className="flex flex-col gap-[12px]">
-                  <div>箭头</div>
+                  <div>{t('arrow')}</div>
                   <Select
                     style={{
                       width: 285,
@@ -841,14 +907,20 @@ export const ConfigPanel: React.FC<IConfigPanelPropsType> = (props) => {
                       });
                     }}
                   >
-                    <Select.Option value="always">常驻显示</Select.Option>
-                    <Select.Option value="hover">鼠标悬停时显示</Select.Option>
+                    <Select.Option value="always">
+                      {t('permanent_display')}
+                    </Select.Option>
+                    <Select.Option value="hover">
+                      {t('shown_mouseover')}
+                    </Select.Option>
                   </Select>
                 </div>
                 <div className="flex flex-col gap-[12px]">
-                  <div>过渡</div>
-                  <div className="bg-[--semi-color-tertiary-light-default] flex h-[84px] w-[300px] flex-col gap-[8px] rounded-[6px] px-[8px] py-[8px]">
-                    <div className="text-[12px] text-[#646A73]">动画</div>
+                  <div>{t('transition')}</div>
+                  <div className="flex h-[84px] w-[300px] flex-col gap-[8px] rounded-[6px] bg-[--semi-color-tertiary-light-default] px-[8px] py-[8px]">
+                    <div className="text-[12px] text-[#646A73]">
+                      {t('animation')}
+                    </div>
                     <Select
                       style={{
                         width: 285,
@@ -861,12 +933,14 @@ export const ConfigPanel: React.FC<IConfigPanelPropsType> = (props) => {
                         });
                       }}
                     >
-                      <Select.Option value="slide">滑动</Select.Option>
-                      <Select.Option value="fade">淡入淡出</Select.Option>
+                      <Select.Option value="slide">{t('slide')}</Select.Option>
+                      <Select.Option value="fade">{t('fade')}</Select.Option>
                     </Select>
                   </div>
-                  <div className="bg-[--semi-color-tertiary-light-default] flex h-[84px] w-[300px] flex-col gap-[8px] rounded-[6px] px-[8px] py-[8px]">
-                    <div className="text-[12px] text-[#646A73]">间隔</div>
+                  <div className="flex h-[84px] w-[300px] flex-col gap-[8px] rounded-[6px] bg-[--semi-color-tertiary-light-default] px-[8px] py-[8px]">
+                    <div className="text-[12px] text-[#646A73]">
+                      {t('interval')}
+                    </div>
                     <InputNumber
                       value={styleConfig.transition.speed}
                       min={0}
