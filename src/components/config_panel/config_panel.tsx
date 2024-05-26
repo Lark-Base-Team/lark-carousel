@@ -45,7 +45,7 @@ interface IConfigPanelPropsType {
   tableSource: ITableSource[];
   dataRange: IDataRange[];
   categories: any[];
-  getTableConfig: (id: string | null) => void;
+  getTableConfig: (id: string | null) => any;
 }
 
 export const ConfigPanel: React.FC<IConfigPanelPropsType> = (props) => {
@@ -85,7 +85,6 @@ export const ConfigPanel: React.FC<IConfigPanelPropsType> = (props) => {
 
       // 主题
       const theme = await bridge.getTheme();
-      console.log('theme 更改----》', theme);
       switchTheme(theme);
 
       // 语言
@@ -235,20 +234,34 @@ export const ConfigPanel: React.FC<IConfigPanelPropsType> = (props) => {
                     field="tableId"
                     label={{ text: t('data_source') }}
                     style={{ width: 300 }}
-                    onChange={(selectValue) => {
-                      getTableConfig(selectValue as string);
+                    onChange={async (selectValue) => {
+                      const { categories } = await getTableConfig(
+                        selectValue as string,
+                      );
+                      const textField = categories.filter(
+                        (item: any) => item.type === FieldType.Text,
+                      );
+
+                      const imageFile = categories.filter(
+                        (item: any) => item.type === FieldType.Attachment,
+                      );
+
                       const { tableId, ...otherProperties } = typeConfig;
                       console.log(tableId);
+
                       // 更改表格的时候重置其他的默认数据
                       const newConfig = {
                         ...otherProperties,
+                        tableId: selectValue,
                         rowRange: 'All',
-                        title: 'hidden',
-                        secTitle: 'hidden',
-                        backGround: 'hidden',
+                        title: textField[0] ? textField[0].id : 'hidden',
+                        secTitle: textField[0] ? textField[0].id : 'hidden',
+                        backGround: imageFile[0] ? imageFile[0].id : 'hidden',
                       };
+
                       // updateTypeConfig({ ...typeConfig, ...newConfig });
                       formApi.current.setValues({ ...newConfig });
+                      // return selectValue;
                     }}
                     optionList={tableSource.map((source) => ({
                       value: source.tableId,
@@ -833,7 +846,6 @@ export const ConfigPanel: React.FC<IConfigPanelPropsType> = (props) => {
                       }}
                       defaultValue={styleConfig.background.color}
                       onSelect={(value) => {
-                        console.log('background color', value);
                         handleChangeStyleConfigData('background', {
                           ...styleConfig.background,
                           color: value,

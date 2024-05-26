@@ -62,7 +62,6 @@ export const CarouselComponents: React.FC = () => {
             : '';
           recordTitleListMap.set(item.recordId, text);
         });
-        console.log('recordTitleListMap', recordTitleListMap);
         setTitleListMap(recordTitleListMap);
       } else {
         setTitleListMap(null);
@@ -82,7 +81,6 @@ export const CarouselComponents: React.FC = () => {
       } else {
         setSecTitleListMap(null);
       }
-
       // 背景图
       if (typeConfig.backGround !== 'hidden') {
         const attachmentField = await table.getField<IAttachmentField>(
@@ -113,26 +111,33 @@ export const CarouselComponents: React.FC = () => {
         const backcgroundImageObjectList = recordBackgroundList.flat();
 
         setBackgroundImageList([...backcgroundImageObjectList]);
-        setCaroulList(backcgroundImageObjectList.length);
+
+        setCaroulList(backcgroundImageObjectList.length, records.length);
       } else {
-        const recordBackgroundList = Array(typeConfig.rowLength)
+        const recordBackgroundList = Array(records.length)
           .fill('')
           .map((item, index) => {
             return { id: records[index].recordId, url: '' };
           });
         setBackgroundImageList([...recordBackgroundList]);
-        setCaroulList(recordBackgroundList.length);
+        setCaroulList(recordBackgroundList.length, records.length);
       }
     }
     getTableData();
   }, [typeConfig]);
 
   // 设置轮播图元素
-  const setCaroulList = (imageLength: number) => {
+  const setCaroulList = (imageLength: number, recordsLength: number) => {
     const arrLength =
-      imageLength > typeConfig.rowLength ? imageLength : typeConfig.rowLength;
+      imageLength > typeConfig.rowLength
+        ? imageLength
+        : recordsLength < typeConfig.rowLength
+        ? recordsLength
+        : typeConfig.rowLength;
+    const newCarosel = Array(arrLength).fill(
+      JSON.stringify(new Date()) + typeConfig.title + typeConfig.secTitle,
+    );
 
-    const newCarosel = Array(arrLength).fill(JSON.stringify(new Date()));
     setCarouselItemArray([...newCarosel]);
   };
 

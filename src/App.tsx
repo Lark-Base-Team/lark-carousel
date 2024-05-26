@@ -72,6 +72,7 @@ const App = () => {
     setTableSource([...tableList]);
     const renderRes = await dashboard.setRendered();
     console.log('自动化 渲染通知--->', renderRes);
+    return { categories };
   }
 
   useEffect(() => {
