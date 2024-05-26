@@ -885,9 +885,9 @@ export const ConfigPanel: React.FC<IConfigPanelPropsType> = (props) => {
                         });
                       }}
                     >
-                      <Radio value={'left'}>{t('居左')}</Radio>
-                      <Radio value={'center'}>{t('居中')}</Radio>
-                      <Radio value={'right'}>{t('居右')}</Radio>
+                      <Radio value={'left'}>{t('left')}</Radio>
+                      <Radio value={'center'}>{t('center')}</Radio>
+                      <Radio value={'right'}>{t('right')}</Radio>
                     </RadioGroup>
                   </div>
                 </div>

@@ -4,33 +4,28 @@ import { useEffect, useState, useMemo } from 'react';
 import { base, IAttachmentField } from '@lark-base-open/js-sdk';
 
 export const CarouselComponents: React.FC = () => {
-  const style = {
-    width: '100%',
-    height: '100%',
-  };
+  // const defaultImgList = [
+  //   'https://lf3-static.bytednsdoc.com/obj/eden-cn/hjeh7pldnulm/SemiDocs/bg-1.png',
+  //   'https://lf3-static.bytednsdoc.com/obj/eden-cn/hjeh7pldnulm/SemiDocs/bg-2.png',
+  //   'https://lf3-static.bytednsdoc.com/obj/eden-cn/hjeh7pldnulm/SemiDocs/bg-3.png',
+  //   'https://lf3-static.bytednsdoc.com/obj/eden-cn/hjeh7pldnulm/SemiDocs/bg-2.png',
+  //   'https://lf3-static.bytednsdoc.com/obj/eden-cn/hjeh7pldnulm/SemiDocs/bg-3.png',
+  // ];
 
-  const defaultImgList = [
-    'https://lf3-static.bytednsdoc.com/obj/eden-cn/hjeh7pldnulm/SemiDocs/bg-1.png',
-    'https://lf3-static.bytednsdoc.com/obj/eden-cn/hjeh7pldnulm/SemiDocs/bg-2.png',
-    'https://lf3-static.bytednsdoc.com/obj/eden-cn/hjeh7pldnulm/SemiDocs/bg-3.png',
-    'https://lf3-static.bytednsdoc.com/obj/eden-cn/hjeh7pldnulm/SemiDocs/bg-2.png',
-    'https://lf3-static.bytednsdoc.com/obj/eden-cn/hjeh7pldnulm/SemiDocs/bg-3.png',
-  ];
+  // const defaultList = [
+  //   'Semi 设计管理系统',
+  //   '从 Semi Design，到 Any Design',
+  //   'Semi 物料市场',
+  //   '面向业务场景的定制化组件，支持线上预览和调试',
+  //   'Semi Template',
+  //   '高效的 Design2Code 设计稿转代码',
+  // ];
 
-  const defaultList = [
-    'Semi 设计管理系统',
-    '从 Semi Design，到 Any Design',
-    'Semi 物料市场',
-    '面向业务场景的定制化组件，支持线上预览和调试',
-    'Semi Template',
-    '高效的 Design2Code 设计稿转代码',
-  ];
-
-  const defaultSecTitle = [
-    '快速定制你的设计系统，并应用在设计稿和代码中',
-    '内容由 Semi Design 用户共建',
-    '海量 Figma 设计模板一键转为真实前端代码',
-  ];
+  // const defaultSecTitle = [
+  //   '快速定制你的设计系统，并应用在设计稿和代码中',
+  //   '内容由 Semi Design 用户共建',
+  //   '海量 Figma 设计模板一键转为真实前端代码',
+  // ];
 
   // 类型与数据
   const { typeConfig } = useTypeConfigStore((state) => state);
@@ -38,20 +33,21 @@ export const CarouselComponents: React.FC = () => {
   // 样式配置数据
   const { styleConfig } = useStyleConfigStore((state) => state);
 
-  const [titleList, setTitleList] = useState([]);
+  const [titleListMap, setTitleListMap] = useState(null);
 
-  const [secTitleList, setSecTitleList] = useState([]);
+  const [secTitleLisMap, setSecTitleListMap] = useState(null);
 
-  const [backgroundImageList, setBackgroundImageList] = useState([]);
+  const [backgroundImageList, setBackgroundImageList] = useState<any[]>([]);
+
+  const [carouselItemArray, setCarouselItemArray] = useState<any[]>([]);
 
   useEffect(() => {
     async function getTableData() {
+      console.log('获取table data');
       // 获取Table
       const table = await base.getTable(typeConfig.tableId);
-      // console.log('table--->', table, typeConfig.rowRange);
-      // 筛选出 符合范围的 records
-      // Todo 筛选范围
 
+      // 筛选出 符合范围的 records
       const { records } = await table.getRecords({
         pageSize: typeConfig.rowLength,
         viewId: typeConfig.rowRange === 'All' ? undefined : typeConfig.rowRange,
@@ -59,25 +55,32 @@ export const CarouselComponents: React.FC = () => {
 
       // 主题
       if (typeConfig.title !== 'hidden') {
-        const recordTitleList = records.map((item) => {
-          return item.fields[typeConfig.title]
+        const recordTitleListMap = new Map();
+        records.forEach((item) => {
+          const text = item.fields[typeConfig.title]
             ? item.fields[typeConfig.title][0].text
             : '';
+          recordTitleListMap.set(item.recordId, text);
         });
-        setTitleList(recordTitleList);
+        console.log('recordTitleListMap', recordTitleListMap);
+        setTitleListMap(recordTitleListMap);
       } else {
-        setTitleList([]);
+        setTitleListMap(null);
       }
 
       // 副标题
       if (typeConfig.secTitle !== 'hidden') {
-        const recordSecTitleList = records.map((item) => {
-          const secTitleId = item.fields[typeConfig.secTitle][0];
-          return item.fields[typeConfig.secTitle] ? secTitleId.text : '';
+        const recordSecTitleListMap = new Map();
+        records.forEach((item) => {
+          const text = item.fields[typeConfig.secTitle]
+            ? item.fields[typeConfig.secTitle][0].text
+            : '';
+          recordSecTitleListMap.set(item.recordId, text);
         });
-        setSecTitleList([...recordSecTitleList]);
+
+        setSecTitleListMap(recordSecTitleListMap);
       } else {
-        setSecTitleList([]);
+        setSecTitleListMap(null);
       }
 
       // 背景图
@@ -89,33 +92,54 @@ export const CarouselComponents: React.FC = () => {
         const [...recordBackgroundList] = await Promise.all(
           records.map(async (item) => {
             if (item.fields[typeConfig.backGround]) {
-              return attachmentField.getAttachmentUrls(item.recordId);
+              const urlList = await attachmentField.getAttachmentUrls(
+                item.recordId,
+              );
+              return urlList.map((url) => {
+                return {
+                  id: item.recordId,
+                  url,
+                };
+              });
             } else {
-              return null;
+              return {
+                id: item.recordId,
+                url: '',
+              };
             }
           }),
         );
-        const bakcgroundImageList = recordBackgroundList
-          .filter((item) => item)
-          .map((item) => item?.[0]);
 
-        setBackgroundImageList([...bakcgroundImageList]);
+        const backcgroundImageObjectList = recordBackgroundList.flat();
+
+        setBackgroundImageList([...backcgroundImageObjectList]);
+        setCaroulList(backcgroundImageObjectList.length);
       } else {
-        // setBackgroundImageList([]);
+        const recordBackgroundList = Array(typeConfig.rowLength)
+          .fill('')
+          .map((item, index) => {
+            return { id: records[index].recordId, url: '' };
+          });
+        setBackgroundImageList([...recordBackgroundList]);
+        setCaroulList(recordBackgroundList.length);
       }
     }
     getTableData();
   }, [typeConfig]);
 
-  // 渲染数组
-  const itemArray = useMemo(() => {
-    return Array(typeConfig.rowLength).fill(JSON.stringify(new Date()));
-  }, [typeConfig, styleConfig]);
+  // 设置轮播图元素
+  const setCaroulList = (imageLength: number) => {
+    const arrLength =
+      imageLength > typeConfig.rowLength ? imageLength : typeConfig.rowLength;
 
+    const newCarosel = Array(arrLength).fill(JSON.stringify(new Date()));
+    setCarouselItemArray([...newCarosel]);
+  };
+
+  // 颜色计算
   function convertColorWithOpacity(color: string, opacity: number): string {
     // 从 color 中提取 RGB 值
     const rgbValues = color.match(/\d+/g)?.map(Number);
-    console.log('rgbValues--->', rgbValues, color, opacity);
     if (!rgbValues || rgbValues.length !== 4) {
       return '';
     }
@@ -130,7 +154,10 @@ export const CarouselComponents: React.FC = () => {
   return (
     <div className="relative flex-1 h-screen">
       <Carousel
-        style={style}
+        style={{
+          width: '100%',
+          height: '100%',
+        }}
         theme={typeConfig?.theme}
         showArrow={typeConfig.control.includes('arrow')}
         showIndicator={typeConfig.control.includes('indicator')}
@@ -140,21 +167,16 @@ export const CarouselComponents: React.FC = () => {
         indicatorType={styleConfig.indicator.type}
         indicatorPosition={styleConfig.indicator.position}
       >
-        {itemArray.map((item, index) => {
+        {carouselItemArray.map((item, index) => {
           return (
             <div
-              key={
-                item +
-                titleList[index] +
-                secTitleList[index] +
-                backgroundImageList[index] +
-                index
-              }
+              key={item + index}
               style={{
                 backgroundSize: 'cover',
                 backgroundImage: `url(${
-                  typeConfig.backGround !== 'hidden'
-                    ? backgroundImageList[index]
+                  typeConfig.backGround !== 'hidden' &&
+                  backgroundImageList[index]
+                    ? backgroundImageList[index].url
                     : ''
                 })`,
                 // backgroundImage: `url(${backgroundImageList[index]})`,
@@ -186,7 +208,8 @@ export const CarouselComponents: React.FC = () => {
                         }`,
                       }}
                     >
-                      {titleList[index]}
+                      {titleListMap &&
+                        titleListMap.get(backgroundImageList[index].id)}
                     </div>
                   )}
                 </div>
@@ -212,7 +235,8 @@ export const CarouselComponents: React.FC = () => {
                         }`,
                       }}
                     >
-                      {secTitleList[index]}
+                      {secTitleLisMap &&
+                        secTitleLisMap.get(backgroundImageList[index].id)}
                     </div>
                   </div>
                 )}

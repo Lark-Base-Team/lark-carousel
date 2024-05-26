@@ -70,7 +70,6 @@ const App = () => {
     setCategories([{ id: 'hidden', name: '隐藏', type: -1 }, ...categories]);
 
     setTableSource([...tableList]);
-    console.log('tableMeta---->', tableRanges);
     const renderRes = await dashboard.setRendered();
     console.log('自动化 渲染通知--->', renderRes);
   }
