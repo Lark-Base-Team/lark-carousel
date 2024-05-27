@@ -56,6 +56,7 @@ export interface IStyleConfigType {
   background: {
     opacity: number;
     color: string;
+    size: string;
   };
   indicator: {
     type: 'dot' | 'line' | 'columnar';
@@ -93,13 +94,14 @@ export const useStyleConfigStore = create<IStyleConfigStore>((set) => ({
       textAlign: 'center',
       color: '#000000',
       fontWeight: false,
-      fontStyle:  false,
+      fontStyle: false,
       textUnderline: false,
       lineThrough: false,
     },
     background: {
       opacity: 90,
       color: 'rgba(255, 255, 255, 1)',
+      size: 'cover',
     },
     indicator: {
       type: 'dot',

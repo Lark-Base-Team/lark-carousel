@@ -857,6 +857,30 @@ export const ConfigPanel: React.FC<IConfigPanelPropsType> = (props) => {
                       dropdownClassName="selectColorDrop"
                     ></Select>
                   </div>
+                  <div className="flex h-[84px] w-[300px] flex-col gap-[8px] rounded-[6px] bg-[--semi-color-tertiary-light-default] px-[8px] py-[8px]">
+                    <div className="text-[12px] text-[#646A73]">
+                      {t('image_background_size')}
+                    </div>
+                    <Select
+                      style={{
+                        width: 285,
+                        outline: 0,
+                      }}
+                      defaultValue={styleConfig.background.size}
+                      onSelect={(value) => {
+                        handleChangeStyleConfigData('background', {
+                          ...styleConfig.background,
+                          size: value,
+                        });
+                      }}
+                    >
+                      <Select.Option value="cover">{t('cover')}</Select.Option>
+                      <Select.Option value="fill">{t('fill')}</Select.Option>
+                      <Select.Option value="contain">
+                        {t('contain')}
+                      </Select.Option>
+                    </Select>
+                  </div>
                 </div>
                 <div className="flex flex-col gap-[12px]">
                   <div>{t('indicator')}</div>

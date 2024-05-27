@@ -36,5 +36,9 @@
   "animation": "动画",
   "slide": "滑动",
   "fade": "淡入淡出",
-  "interval": "间隔"
+  "interval": "间隔",
+  "image_background_size": "填充方式",
+  "cover": "裁剪铺满",
+  "fill": "拉伸填充",
+  "contain": "适应"
 }

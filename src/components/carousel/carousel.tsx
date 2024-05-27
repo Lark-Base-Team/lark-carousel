@@ -124,7 +124,7 @@ export const CarouselComponents: React.FC = () => {
       }
     }
     getTableData();
-  }, [typeConfig]);
+  }, [typeConfig, styleConfig]);
 
   // 设置轮播图元素
   const setCaroulList = (imageLength: number, recordsLength: number) => {
@@ -177,7 +177,10 @@ export const CarouselComponents: React.FC = () => {
             <div
               key={item + index}
               style={{
-                backgroundSize: 'cover',
+                backgroundSize:
+                  styleConfig.background.size === 'fill'
+                    ? '100% 100%'
+                    : styleConfig.background.size,
                 backgroundImage: `url(${
                   typeConfig.backGround !== 'hidden' &&
                   backgroundImageList[index]
