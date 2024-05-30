@@ -36,5 +36,9 @@
   "animation": "アニメーション",
   "slide": "スライド",
   "fade": "フェードイン・アウト",
-  "interval": "間隔"
+  "interval": "間隔",
+  "image_background_size": "塗りつぶし方法",
+  "cover": "切り取って全体に合わせる",
+  "fill": "引き伸ばして塗りつぶす",
+  "contain": "適応させる"
 }

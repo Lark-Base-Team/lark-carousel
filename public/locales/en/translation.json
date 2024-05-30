@@ -36,5 +36,9 @@
   "animation": "Animation",
   "slide": "Slide",
   "fade": "Fade",
-  "interval": "Interval"
+  "interval": "Interval",
+  "image_background_size": "Image filling method",
+  "cover": "Cover",
+  "fill": "Fill",
+  "contain": "Fit"
 }
