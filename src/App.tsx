@@ -93,6 +93,8 @@ const App = () => {
     getConfig();
 
     dashboard.onConfigChange(getConfig);
+    // 监控数据变化
+    dashboard.onDataChange(getConfig);
   }, []);
 
   return (

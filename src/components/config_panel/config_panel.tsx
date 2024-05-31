@@ -139,7 +139,11 @@ export const ConfigPanel: React.FC<IConfigPanelPropsType> = (props) => {
   // 保存配置
   const saveConfig = () => {
     dashboard.saveConfig({
-      dataConditions: [],
+      dataConditions: [
+        {
+          tableId: typeConfig.tableId,
+        },
+      ],
       customConfig: {
         typeConfig,
         styleConfig,
