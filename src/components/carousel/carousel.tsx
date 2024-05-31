@@ -1,7 +1,12 @@
 import { Carousel } from '@douyinfe/semi-ui';
 import { useTypeConfigStore, useStyleConfigStore } from '@/store';
-import { useEffect, useState, useMemo } from 'react';
-import { base, IAttachmentField } from '@lark-base-open/js-sdk';
+import { useEffect, useState } from 'react';
+import {
+  base,
+  IAttachmentField,
+  dashboard,
+  DashboardState,
+} from '@lark-base-open/js-sdk';
 
 export const CarouselComponents: React.FC = () => {
   // const defaultImgList = [
@@ -157,7 +162,17 @@ export const CarouselComponents: React.FC = () => {
   }
 
   return (
-    <div className="relative flex-1 h-screen">
+    <div
+      className="relative flex-1 h-screen"
+      style={{
+        borderTop:
+          dashboard.state === DashboardState.View ? 'none' : '0.5px solid ',
+        borderColor:
+          typeConfig.theme === 'light'
+            ? 'rgba(207,207,207, 0.15)'
+            : 'rgba(31, 35, 41, 0.15)',
+      }}
+    >
       <Carousel
         style={{
           width: '100%',

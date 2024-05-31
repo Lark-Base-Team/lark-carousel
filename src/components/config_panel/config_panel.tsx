@@ -5,6 +5,7 @@ import {
   SourceType,
   IDataRange,
   FieldType,
+  DashboardState,
 } from '@lark-base-open/js-sdk';
 import { useEffect, useRef } from 'react';
 import {
@@ -78,27 +79,26 @@ export const ConfigPanel: React.FC<IConfigPanelPropsType> = (props) => {
   useEffect(() => {
     async function getConfig() {
       const config = await dashboard.getConfig();
-      const { typeConfig, styleConfig } = config.customConfig as any;
-      updateTypeConfig(typeConfig);
+      const { typeConfig: systemTypeConfig, styleConfig } =
+        config.customConfig as any;
       updateStyleConfig(styleConfig);
       getTableConfig(typeConfig.tableId);
 
       // 主题
       const theme = await bridge.getTheme();
       switchTheme(theme);
-
+      const themeValue = theme === ThemeModeType.LIGHT ? 'dark' : 'light';
+      const newConfigValue = { ...systemTypeConfig, theme: themeValue };
+      updateTypeConfig(newConfigValue);
       // 语言
       const locale = await bridge.getLocale();
       i18n.changeLanguage(locale);
 
       if (!formApi.current) return;
       // 更新
-      formApi.current.setValues(typeConfig);
+      formApi.current.setValues(newConfigValue);
     }
-    // if (dashboard.state === DashboardState.View) {
-    //   getConfig();
-    // }
-    // dashboard.onConfigChange(getConfig);
+
     getConfig();
   }, []);
 
@@ -217,7 +217,17 @@ export const ConfigPanel: React.FC<IConfigPanelPropsType> = (props) => {
   };
 
   return (
-    <div className="relative flex h-screen w-[350px] flex-col border-l-[1px] border-[#ccc] bg-[--semi-color-bg-0]">
+    <div
+      className="border-[rgba(31, 35, 41, 0.15)] dark:border-[rgba(207,207,207, 0.15)] relative flex h-screen w-[350px] flex-col border-l-[0.5px]  bg-[--semi-color-bg-0]"
+      style={{
+        borderTop:
+          dashboard.state === DashboardState.View ? 'none' : '0.5px solid ',
+        borderColor:
+          typeConfig.theme === 'light'
+            ? 'rgba(207,207,207, 0.15)'
+            : 'rgba(31, 35, 41, 0.15)',
+      }}
+    >
       <div className="relative flex-1">
         {
           <Tabs type="line">
@@ -1005,7 +1015,7 @@ export const ConfigPanel: React.FC<IConfigPanelPropsType> = (props) => {
       </div>
       <div className="relative h-[72px] w-[340px] bg-[--semi-color-bg-0]">
         <Button
-          className="fixed bottom-[10px] right-[10px] w-[80px]"
+          className="fixed bottom-[10px] right-[10px] w-[80px] bg-[var(--semi-color-primary)]"
           theme="solid"
           type="primary"
           onClick={() => saveConfig()}

@@ -25,9 +25,9 @@ export const useTypeConfigStore = create<ITypeConfigStore>((set) => ({
     secTitle: 'hidden',
     backGround: 'hidden',
     rowLength: 3,
-    theme: 'dark',
+    theme: 'light',
     control: ['indicator', 'arrow'],
-    update: 'update'
+    update: 'update',
   },
   updateTypeConfig: (typeConfig) => set(() => ({ typeConfig })),
 }));
@@ -84,7 +84,7 @@ export const useStyleConfigStore = create<IStyleConfigStore>((set) => ({
       textAlign: 'center',
       color: '#000000',
       fontWeight: true,
-      fontStyle:  false,
+      fontStyle: false,
       textUnderline: false,
       lineThrough: false,
     },
@@ -115,5 +115,6 @@ export const useStyleConfigStore = create<IStyleConfigStore>((set) => ({
       speed: 800,
     },
   },
-  updateStyleConfig: (styleConfig: IStyleConfigType) => set(() => ({ styleConfig }))
+  updateStyleConfig: (styleConfig: IStyleConfigType) =>
+    set(() => ({ styleConfig })),
 }));

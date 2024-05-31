@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, StrictMode } from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App';
 import { initI18n } from './i18n.ts';
@@ -22,9 +22,11 @@ function LoadApp() {
   }, []);
 
   return (
-    <Suspense fallback="loading">
-      <App />
-    </Suspense>
+    <StrictMode>
+      <Suspense fallback="loading">
+        <App />
+      </Suspense>
+    </StrictMode>
   );
 }
 
