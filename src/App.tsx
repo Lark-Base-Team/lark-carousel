@@ -52,7 +52,7 @@ const App = () => {
   }, []);
 
   async function initConfigData(id: string | null) {
-    console.log('更新表格数据', id);
+    // console.log('更新表格数据', id);
 
     const tableIdList = await base.getTableList();
     const tableList = await Promise.all(getTableList(tableIdList));
@@ -71,7 +71,7 @@ const App = () => {
 
     setTableSource([...tableList]);
     const renderRes = await dashboard.setRendered();
-    console.log('自动化 渲染通知--->', renderRes);
+    // console.log('自动化 渲染通知--->', renderRes);
     return { categories };
   }
 

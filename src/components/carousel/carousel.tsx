@@ -1,6 +1,6 @@
 import { Carousel } from '@douyinfe/semi-ui';
 import { useTypeConfigStore, useStyleConfigStore } from '@/store';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import {
   base,
   IAttachmentField,
@@ -48,7 +48,7 @@ export const CarouselComponents: React.FC = () => {
 
   useEffect(() => {
     async function getTableData() {
-      console.log('获取table data');
+      // console.log('获取table data');
       // 获取Table
       const table = await base.getTable(typeConfig.tableId);
 
@@ -161,6 +161,10 @@ export const CarouselComponents: React.FC = () => {
     return `rgba(${rgbValues[0]}, ${rgbValues[1]}, ${rgbValues[2]}, ${newAlpha})`;
   }
 
+  const caroulKey = useMemo(() => {
+    return JSON.stringify(new Date());
+  }, [typeConfig, styleConfig]);
+
   return (
     <div
       className="relative flex-1 h-screen"
@@ -190,7 +194,7 @@ export const CarouselComponents: React.FC = () => {
         {carouselItemArray.map((item, index) => {
           return (
             <div
-              key={item + index}
+              key={item + index + caroulKey}
               style={{
                 backgroundSize:
                   styleConfig.background.size === 'fill'
