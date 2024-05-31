@@ -193,3 +193,7 @@ sketch
 .idea
 
 # End of https://www.toptal.com/developers/gitignore/api/react,node,yarn,visualstudiocode
+
+pnpm-lock.yaml
+package-lock.json
+dist/
