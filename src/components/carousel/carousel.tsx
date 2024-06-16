@@ -196,6 +196,7 @@ export const CarouselComponents: React.FC = () => {
             <div
               key={item + index + caroulKey}
               style={{
+                backgroundRepeat: 'no-repeat',
                 backgroundSize:
                   styleConfig.background.size === 'fill'
                     ? '100% 100%'
