@@ -53,10 +53,12 @@ export const CarouselComponents: React.FC = () => {
       const table = await base.getTable(typeConfig.tableId);
 
       // 筛选出 符合范围的 records
-      const { records } = await table.getRecords({
+      const { records } = await table.getRecordsByPage({
         pageSize: typeConfig.rowLength,
         viewId: typeConfig.rowRange === 'All' ? undefined : typeConfig.rowRange,
       });
+
+      console.log('records--->', records);
 
       // 主题
       if (typeConfig.title !== 'hidden') {
