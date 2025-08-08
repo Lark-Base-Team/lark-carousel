@@ -5,6 +5,7 @@
   "data_range": "Data Range",
   "view_all": "View All",
   "title": "Title",
+  "getDataError": "Get data failed",
   "sec_title": "Subtitle",
   "background_image": "Background Image",
   "records": "Record Count",

@@ -1,4 +1,4 @@
-import { Carousel } from '@douyinfe/semi-ui';
+import { Carousel, Notification } from '@douyinfe/semi-ui';
 import { useTypeConfigStore, useStyleConfigStore } from '@/store';
 import { useEffect, useMemo, useState } from 'react';
 import {
@@ -6,7 +6,9 @@ import {
   IAttachmentField,
   dashboard,
   DashboardState,
+  IOpenSegment,
 } from '@lark-base-open/js-sdk';
+import { useTranslation } from 'react-i18next';
 
 export const CarouselComponents: React.FC = () => {
   // const defaultImgList = [
@@ -38,13 +40,14 @@ export const CarouselComponents: React.FC = () => {
   // 样式配置数据
   const { styleConfig } = useStyleConfigStore((state) => state);
 
-  const [titleListMap, setTitleListMap] = useState(null);
+  const [titleListMap, setTitleListMap] = useState<Map<string, string> | null>(null);
 
-  const [secTitleLisMap, setSecTitleListMap] = useState(null);
+  const [secTitleLisMap, setSecTitleListMap] = useState<Map<string, string> | null>(null);
 
   const [backgroundImageList, setBackgroundImageList] = useState<any[]>([]);
 
   const [carouselItemArray, setCarouselItemArray] = useState<any[]>([]);
+  const { t } = useTranslation();
 
   useEffect(() => {
     async function getTableData() {
@@ -56,6 +59,16 @@ export const CarouselComponents: React.FC = () => {
       const { records } = await table.getRecordsByPage({
         pageSize: typeConfig.rowLength,
         viewId: typeConfig.rowRange === 'All' ? undefined : typeConfig.rowRange,
+      }).catch((e) => {
+        Notification.warning({
+          content: e.message,
+          title: t('getDataError'),
+          duration: 0,
+          position: 'top'
+        })
+        return {
+          records: [],
+        };
       });
 
       console.log('records--->', records);
@@ -65,7 +78,7 @@ export const CarouselComponents: React.FC = () => {
         const recordTitleListMap = new Map();
         records.forEach((item) => {
           const text = item.fields[typeConfig.title]
-            ? item.fields[typeConfig.title][0].text
+            ? (item?.fields?.[typeConfig.title] as IOpenSegment[])?.map((cell) => cell.text).join('')
             : '';
           recordTitleListMap.set(item.recordId, text);
         });
@@ -76,10 +89,10 @@ export const CarouselComponents: React.FC = () => {
 
       // 副标题
       if (typeConfig.secTitle !== 'hidden') {
-        const recordSecTitleListMap = new Map();
+        const recordSecTitleListMap = new Map<string, string>();
         records.forEach((item) => {
           const text = item.fields[typeConfig.secTitle]
-            ? item.fields[typeConfig.secTitle][0].text
+            ? (item?.fields?.[typeConfig.secTitle] as IOpenSegment[])?.map((cell) => cell.text).join('')
             : '';
           recordSecTitleListMap.set(item.recordId, text);
         });
@@ -139,8 +152,8 @@ export const CarouselComponents: React.FC = () => {
       imageLength > typeConfig.rowLength
         ? imageLength
         : recordsLength < typeConfig.rowLength
-        ? recordsLength
-        : typeConfig.rowLength;
+          ? recordsLength
+          : typeConfig.rowLength;
     const newCarosel = Array(arrLength).fill(
       JSON.stringify(new Date()) + typeConfig.title + typeConfig.secTitle,
     );
@@ -203,12 +216,11 @@ export const CarouselComponents: React.FC = () => {
                   styleConfig.background.size === 'fill'
                     ? '100% 100%'
                     : styleConfig.background.size,
-                backgroundImage: `url(${
-                  typeConfig.backGround !== 'hidden' &&
+                backgroundImage: `url(${typeConfig.backGround !== 'hidden' &&
                   backgroundImageList[index]
-                    ? backgroundImageList[index].url
-                    : ''
-                })`,
+                  ? backgroundImageList[index].url
+                  : ''
+                  })`,
                 // backgroundImage: `url(${backgroundImageList[index]})`,
                 backgroundColor: convertColorWithOpacity(
                   styleConfig.background.color,
@@ -225,17 +237,13 @@ export const CarouselComponents: React.FC = () => {
                         fontSize: `${styleConfig.title.fontSize}px`,
                         color: `${styleConfig.title.color}`,
                         textAlign: `${styleConfig.title.textAlign}`,
-                        fontWeight: `${
-                          styleConfig.title.fontWeight ? 600 : 400
-                        }`,
-                        fontStyle: `${
-                          styleConfig.title.fontStyle ? 'italic' : 'normal'
-                        }`,
-                        textDecoration: `${
-                          styleConfig.title.textUnderline ? 'underline' : ''
-                        } ${
-                          styleConfig.title.lineThrough ? 'line-through' : ''
-                        }`,
+                        fontWeight: `${styleConfig.title.fontWeight ? 600 : 400
+                          }`,
+                        fontStyle: `${styleConfig.title.fontStyle ? 'italic' : 'normal'
+                          }`,
+                        textDecoration: `${styleConfig.title.textUnderline ? 'underline' : ''
+                          } ${styleConfig.title.lineThrough ? 'line-through' : ''
+                          }`,
                       }}
                     >
                       {titleListMap &&
@@ -252,17 +260,13 @@ export const CarouselComponents: React.FC = () => {
                         lineHeight: `${styleConfig.secTitle.fontSize}px`,
                         color: `${styleConfig.secTitle.color}`,
                         textAlign: `${styleConfig.secTitle.textAlign}`,
-                        fontWeight: `${
-                          styleConfig.secTitle.fontWeight ? 600 : 400
-                        }`,
-                        fontStyle: `${
-                          styleConfig.secTitle.fontStyle ? 'italic' : 'normal'
-                        }`,
-                        textDecoration: `${
-                          styleConfig.secTitle.textUnderline ? 'underline' : ''
-                        } ${
-                          styleConfig.secTitle.lineThrough ? 'line-through' : ''
-                        }`,
+                        fontWeight: `${styleConfig.secTitle.fontWeight ? 600 : 400
+                          }`,
+                        fontStyle: `${styleConfig.secTitle.fontStyle ? 'italic' : 'normal'
+                          }`,
+                        textDecoration: `${styleConfig.secTitle.textUnderline ? 'underline' : ''
+                          } ${styleConfig.secTitle.lineThrough ? 'line-through' : ''
+                          }`,
                       }}
                     >
                       {secTitleLisMap &&

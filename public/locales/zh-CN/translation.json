@@ -40,5 +40,6 @@
   "image_background_size": "填充方式",
   "cover": "裁剪铺满",
   "fill": "拉伸填充",
+  "getDataError": "获取数据失败",
   "contain": "适应"
 }
