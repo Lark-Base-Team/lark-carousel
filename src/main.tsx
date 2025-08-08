@@ -5,11 +5,14 @@ import { initI18n } from './i18n.ts';
 import { bitable } from '@lark-base-open/js-sdk';
 import './index.css';
 import { Suspense } from 'react';
+import { useTranslation } from 'react-i18next';
 
 const rootElement = document.getElementById('root') as HTMLElement;
 const root = ReactDOM.createRoot(rootElement);
 
 function LoadApp() {
+  const { t } = useTranslation();
+  window.t = t;
   useEffect(() => {
     bitable.bridge
       .getLanguage()

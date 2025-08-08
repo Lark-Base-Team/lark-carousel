@@ -14,7 +14,7 @@ export interface ITypeConfigType {
 
 interface ITypeConfigStore {
   typeConfig: ITypeConfigType;
-  updateTypeConfig: (typeConfig: ITypeConfigStore) => void;
+  updateTypeConfig: (typeConfig: ITypeConfigType) => void;
 }
 
 export const useTypeConfigStore = create<ITypeConfigStore>((set) => ({
@@ -29,7 +29,7 @@ export const useTypeConfigStore = create<ITypeConfigStore>((set) => ({
     control: ['indicator', 'arrow'],
     update: 'update',
   },
-  updateTypeConfig: (typeConfig) => set(() => ({ typeConfig })),
+  updateTypeConfig: (typeConfig: ITypeConfigStore['typeConfig']) => set(() => ({ typeConfig })),
 }));
 
 export interface IStyleConfigType {

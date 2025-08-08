@@ -8,37 +8,17 @@ import {
   DashboardState,
   IOpenSegment,
 } from '@lark-base-open/js-sdk';
-import { useTranslation } from 'react-i18next';
+// import { useTranslation } from 'react-i18next'; // 这东西有bug https://github.com/i18next/react-i18next/issues/1473
+
+function useStore() {
+  const { typeConfig } = (() => useTypeConfigStore((state) => state))();
+  console.log('===typeConfig', typeConfig);
+  // 样式配置数据
+  const { styleConfig } = (() => useStyleConfigStore((state) => state))();
+  return { typeConfig, styleConfig }
+}
 
 export const CarouselComponents: React.FC = () => {
-  // const defaultImgList = [
-  //   'https://lf3-static.bytednsdoc.com/obj/eden-cn/hjeh7pldnulm/SemiDocs/bg-1.png',
-  //   'https://lf3-static.bytednsdoc.com/obj/eden-cn/hjeh7pldnulm/SemiDocs/bg-2.png',
-  //   'https://lf3-static.bytednsdoc.com/obj/eden-cn/hjeh7pldnulm/SemiDocs/bg-3.png',
-  //   'https://lf3-static.bytednsdoc.com/obj/eden-cn/hjeh7pldnulm/SemiDocs/bg-2.png',
-  //   'https://lf3-static.bytednsdoc.com/obj/eden-cn/hjeh7pldnulm/SemiDocs/bg-3.png',
-  // ];
-
-  // const defaultList = [
-  //   'Semi 设计管理系统',
-  //   '从 Semi Design，到 Any Design',
-  //   'Semi 物料市场',
-  //   '面向业务场景的定制化组件，支持线上预览和调试',
-  //   'Semi Template',
-  //   '高效的 Design2Code 设计稿转代码',
-  // ];
-
-  // const defaultSecTitle = [
-  //   '快速定制你的设计系统，并应用在设计稿和代码中',
-  //   '内容由 Semi Design 用户共建',
-  //   '海量 Figma 设计模板一键转为真实前端代码',
-  // ];
-
-  // 类型与数据
-  const { typeConfig } = useTypeConfigStore((state) => state);
-
-  // 样式配置数据
-  const { styleConfig } = useStyleConfigStore((state) => state);
 
   const [titleListMap, setTitleListMap] = useState<Map<string, string> | null>(null);
 
@@ -47,10 +27,15 @@ export const CarouselComponents: React.FC = () => {
   const [backgroundImageList, setBackgroundImageList] = useState<any[]>([]);
 
   const [carouselItemArray, setCarouselItemArray] = useState<any[]>([]);
-  const { t } = useTranslation();
+
+  const { typeConfig, styleConfig } = useStore();
 
   useEffect(() => {
     async function getTableData() {
+      // 恢复配置检查
+      if (!typeConfig.tableId) {
+        return;
+      }
       // console.log('获取table data');
       // 获取Table
       const table = await base.getTable(typeConfig.tableId);
@@ -62,7 +47,7 @@ export const CarouselComponents: React.FC = () => {
       }).catch((e) => {
         Notification.warning({
           content: e.message,
-          title: t('getDataError'),
+          title: window.t('getDataError'),
           duration: 0,
           position: 'top'
         })
@@ -144,7 +129,7 @@ export const CarouselComponents: React.FC = () => {
       }
     }
     getTableData();
-  }, [typeConfig, styleConfig]);
+  }, [typeConfig]); // 添加typeConfig依赖
 
   // 设置轮播图元素
   const setCaroulList = (imageLength: number, recordsLength: number) => {

@@ -81,6 +81,9 @@ const App = () => {
 
   useEffect(() => {
     async function getConfig() {
+      if (dashboard.state === DashboardState.Create) {
+        return;
+      }
       const config = await dashboard.getConfig();
 
       const { typeConfig, styleConfig } = config.customConfig as any;
@@ -101,17 +104,17 @@ const App = () => {
     <div className="flex h-full">
       <CarouselComponents />
       {dashboard.state === DashboardState.Create ||
-      dashboard.state === DashboardState.Config
+        dashboard.state === DashboardState.Config
         ? tableSource.length > 0 &&
-          dataRange.length > 0 &&
-          categories.length > 0 && (
-            <ConfigPanel
-              tableSource={tableSource}
-              dataRange={dataRange}
-              categories={categories}
-              getTableConfig={initConfigData}
-            />
-          )
+        dataRange.length > 0 &&
+        categories.length > 0 && (
+          <ConfigPanel
+            tableSource={tableSource}
+            dataRange={dataRange}
+            categories={categories}
+            getTableConfig={initConfigData}
+          />
+        )
         : null}
     </div>
   );
