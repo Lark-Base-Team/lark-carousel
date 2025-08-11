@@ -1,4 +1,5 @@
 {
+  "noPermission": "No read permission for data table: [{{tableName}}], unable to view data",
   "tab_name1": "Types And Data",
   "tab_name2": "Custom Styles",
   "data_source": "Data Source",

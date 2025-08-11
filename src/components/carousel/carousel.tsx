@@ -7,8 +7,14 @@ import {
   dashboard,
   DashboardState,
   IOpenSegment,
+  bitable,
+  PermissionEntity,
+  OperationType,
+  IRecord,
 } from '@lark-base-open/js-sdk';
-// import { useTranslation } from 'react-i18next'; // 这东西有bug https://github.com/i18next/react-i18next/issues/1473
+import { useTranslation } from 'react-i18next'; // 这东西有bug https://github.com/i18next/react-i18next/issues/1473
+// @ts-ignore
+window.bitable = bitable;
 
 function useStore() {
   const { typeConfig } = (() => useTypeConfigStore((state) => state))();
@@ -20,6 +26,8 @@ function useStore() {
 
 export const CarouselComponents: React.FC = () => {
 
+
+
   const [titleListMap, setTitleListMap] = useState<Map<string, string> | null>(null);
 
   const [secTitleLisMap, setSecTitleListMap] = useState<Map<string, string> | null>(null);
@@ -29,7 +37,8 @@ export const CarouselComponents: React.FC = () => {
   const [carouselItemArray, setCarouselItemArray] = useState<any[]>([]);
 
   const { typeConfig, styleConfig } = useStore();
-
+  const { t } = useTranslation();
+  window.t = t;
   useEffect(() => {
     async function getTableData() {
       // 恢复配置检查
@@ -41,10 +50,39 @@ export const CarouselComponents: React.FC = () => {
       const table = await base.getTable(typeConfig.tableId);
 
       // 筛选出 符合范围的 records
-      const { records } = await table.getRecordsByPage({
+      const { records } = await Promise.race<{ records: IRecord[] }>([table.getRecordsByPage({
         pageSize: typeConfig.rowLength,
         viewId: typeConfig.rowRange === 'All' ? undefined : typeConfig.rowRange,
-      }).catch((e) => {
+      }), new Promise((resolve, reject) => {
+        setTimeout(() => {
+          reject(new Error('获取数据超时'));
+        }, 8000);
+      })]).catch(async (e) => {
+        const hasPermission = await bitable.base.getPermission({
+          entity: PermissionEntity.Table,
+          param: {
+            tableId: typeConfig.tableId,
+          },
+          type: OperationType.Visible,
+        }).catch(() => false);
+
+        console.log('hasPermission--->', hasPermission);
+
+        if (!hasPermission) {
+          const tableName = typeConfig.tableName || await table.getName() || table.id;
+          Notification.close('noPermission');
+
+          Notification.warning({
+            content: window.t('noPermission', { tableName }),
+            title: window.t('getDataError'),
+            duration: 0,
+            position: 'top',
+            id: 'noPermission',
+          })
+          return {
+            records: [],
+          };
+        }
         Notification.warning({
           content: e.message,
           title: window.t('getDataError'),
@@ -54,7 +92,7 @@ export const CarouselComponents: React.FC = () => {
         return {
           records: [],
         };
-      });
+      })
 
       console.log('records--->', records);
 

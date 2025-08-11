@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 
 export interface ITypeConfigType {
+  tableName: string;
   tableId: string;
   rowRange: string;
   title: string;
@@ -22,6 +23,7 @@ export const useTypeConfigStore = create<ITypeConfigStore>((set) => ({
     tableId: '',
     rowRange: '',
     title: 'hidden',
+    tableName: '',
     secTitle: 'hidden',
     backGround: 'hidden',
     rowLength: 3,

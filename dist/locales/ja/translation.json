@@ -1,4 +1,5 @@
 {
+  "noPermission": "データテーブル: [{{tableName}}] の読み取り権限がないため、データを表示できません",
   "tab_name1": "タイプとデータ",
   "tab_name2": "カスタムスタイル",
   "data_source": "データソース",

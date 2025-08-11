@@ -1,4 +1,5 @@
 {
+  "noPermission": "无数据表:[{{tableName}}]的阅读权限，无法查看数据",
   "tab_name1": "类型与数据",
   "tab_name2": "自定义样式",
   "data_source": "数据源",

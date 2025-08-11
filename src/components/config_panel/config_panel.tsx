@@ -6,6 +6,7 @@ import {
   IDataRange,
   FieldType,
   DashboardState,
+  bitable,
 } from '@lark-base-open/js-sdk';
 import { useEffect, useRef } from 'react';
 import {
@@ -89,6 +90,8 @@ export const ConfigPanel: React.FC<IConfigPanelPropsType> = (props) => {
       switchTheme(theme);
       const themeValue = theme === ThemeModeType.LIGHT ? 'dark' : 'light';
       const newConfigValue = { ...systemTypeConfig, theme: themeValue };
+      const tableName = await bitable.base.getTableMetaById(typeConfig.tableId);
+      newConfigValue.tableName = tableName.name;
       updateTypeConfig(newConfigValue);
       // 语言
       const locale = await bridge.getLocale();
@@ -122,8 +125,10 @@ export const ConfigPanel: React.FC<IConfigPanelPropsType> = (props) => {
   }, [tableSource, typeConfig.tableId]);
 
   // 类型与数据表单更改
-  const handleFormValueChange = (values: any) => {
+  const handleFormValueChange = async (values: any) => {
     const newConfig = { ...typeConfig, ...values };
+    const tableName = await bitable.base.getTableMetaById(typeConfig.tableId);
+    newConfig.tableName = tableName.name;
     updateTypeConfig({ ...newConfig });
   };
 

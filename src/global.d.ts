@@ -1,6 +1,6 @@
 declare global {
   interface Window {
-    t: (key: string) => string;
+    t: (key: string, params?: Record<string, string>) => string;
   }
 }
 

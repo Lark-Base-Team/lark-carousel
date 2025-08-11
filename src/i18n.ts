@@ -2,7 +2,7 @@ import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
 import translationZH from '../public/locales/zh-CN/translation.json';
 import translationEN from '../public/locales/en/translation.json';
-
+import translationJA from '../public/locales/ja/translation.json';
 export function initI18n(lang: any) {
   // 初始化 i18n
   i18n.use(initReactI18next).init({
@@ -12,6 +12,18 @@ export function initI18n(lang: any) {
       },
       zh: {
         translation: translationZH,
+      },
+      ja: {
+        translation: translationJA,
+      },
+      'zh-CN': {
+        translation: translationZH,
+      },
+      'en-US': {
+        translation: translationEN,
+      },
+      'ja-JP': {
+        translation: translationJA,
       },
     },
     lng: lang, // 设置默认语言
